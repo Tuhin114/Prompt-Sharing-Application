@@ -497,3 +497,55 @@ The `Feed` component is a core part of a Next.js application that fetches and di
 - **Scalability**: For large datasets, you might consider implementing server-side pagination or more advanced filtering techniques to avoid loading and filtering too much data on the client side.
 
 This `Feed` component is versatile and provides essential features for content discovery within the application.
+
+## Note 9
+
+The `PromptCard` component is a UI element designed to display individual prompts or posts within the Next.js application. It includes functionalities for viewing the creator's profile, copying the prompt to the clipboard, and (if the user is the creator and is on their profile page) editing or deleting the prompt.
+
+### Breakdown of the Code:
+
+1. **State Management**:
+   - **`copied`**: This state is used to temporarily store the prompt that has been copied to the clipboard. It helps in giving visual feedback to the user by toggling the copy icon.
+
+2. **Handling Profile Click**:
+   - **`handleProfileClick`**: Redirects the user to the profile page of the prompt's creator. If the creator is the logged-in user, it navigates to their own profile page (`/profile`). Otherwise, it directs to the profile page of the creator, identified by their user ID.
+
+3. **Copy to Clipboard**:
+   - **`handleCopy`**: Copies the prompt's text to the user's clipboard. After copying, it updates the `copied` state and changes the icon to indicate success. This change is reverted after 3 seconds.
+
+4. **Conditional Rendering**:
+   - The component conditionally renders the "Edit" and "Delete" buttons if the logged-in user is the creator of the prompt and the current page is the profile page (`/profile`).
+
+5. **Event Handlers**:
+   - **`handleEdit` and `handleDelete`**: These are callback functions passed as props to the component. They allow the parent component to define what happens when a user clicks "Edit" or "Delete."
+   - **`handleTagClick`**: Another callback function that triggers when a tag is clicked. It allows filtering or searching based on the clicked tag.
+
+### Component Structure:
+
+- **Profile Information**:
+  - Displays the creator's profile image, username, and email.
+  - Clicking on the profile section directs the user to the creator's profile.
+
+- **Copy Button**:
+  - A small button that toggles between a copy icon and a tick icon based on whether the prompt has been copied.
+
+- **Prompt and Tag**:
+  - The main prompt text is displayed, followed by the tag associated with it. The tag is clickable and triggers the `handleTagClick` function if provided.
+
+- **Edit and Delete Buttons**:
+  - Only visible if the current user is the creator and they are viewing their own profile page. These buttons provide options to modify or remove the prompt.
+
+### Usage:
+
+- **Profile Navigation**: Users can navigate to the profile of the prompt's creator by clicking on their profile information.
+- **Copy Functionality**: Easily copy the prompt text to the clipboard, with visual feedback indicating success.
+- **Tag Filtering**: Tags are clickable, enabling quick filtering or searching of similar prompts based on tags.
+- **Prompt Management**: The creator can edit or delete their prompt directly from the profile page.
+
+### Considerations:
+
+- **User Experience**: The component provides a clean and interactive UI, making it easy for users to manage and interact with prompts.
+- **Scalability**: This component can be reused in different parts of the application, such as feeds, profile pages, or search results, making it versatile.
+- **Performance**: The component is lightweight and uses minimal state management, ensuring it performs efficiently even when rendering multiple prompts in a list.
+
+Overall, the `PromptCard` component is well-structured and offers essential functionalities for prompt management and interaction within the application.
