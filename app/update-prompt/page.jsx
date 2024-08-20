@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
 import Form from "@components/Form";
+
+export const dynamic = "force-dynamic";
 
 const UpdatePrompt = () => {
   const router = useRouter();
@@ -11,17 +12,26 @@ const UpdatePrompt = () => {
   const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [loading, setLoading] = useState(true); // Loading state for fetching prompt details
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
+      if (!promptId) return;
 
-      setPost({
-        prompt: data.prompt,
-        tag: data.tag,
-      });
+      try {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        const data = await response.json();
+
+        setPost({
+          prompt: data.prompt,
+          tag: data.tag,
+        });
+        setLoading(false); // Data is ready
+      } catch (error) {
+        console.error("Failed to fetch prompt details:", error);
+        setLoading(false); // Even in case of error, stop loading
+      }
     };
 
     if (promptId) getPromptDetails();
@@ -52,16 +62,16 @@ const UpdatePrompt = () => {
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={updatePrompt}
-      />
-    </Suspense>
+    <Form
+      type="Edit"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={updatePrompt}
+    />
   );
 };
 
