@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@components/Form";
 
@@ -75,4 +75,11 @@ const UpdatePrompt = () => {
   );
 };
 
-export default UpdatePrompt;
+// Wrap UpdatePrompt in Suspense
+const SuspenseWrapper = () => (
+  <Suspense fallback={<div>Loading component...</div>}>
+    <UpdatePrompt />
+  </Suspense>
+);
+
+export default SuspenseWrapper;
