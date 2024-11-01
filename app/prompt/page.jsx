@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const PromptForm = () => {
-  const [input, setInput] = useState(""); // Form input state
-  const [queries, setQueries] = useState([]); // State to hold individual prompts
+const PromptForm = ({ value }) => {
+  const [input, setInput] = useState(value || "");
+  const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setInput(value || "");
+  }, [value]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,11 +34,10 @@ const PromptForm = () => {
       }
 
       const data = await response.json();
-      console.log("Response data:", data); // Log the response data
+      console.log("Response data:", data);
 
-      // Assuming your API directly returns an array of strings
       if (Array.isArray(data.prompts)) {
-        setQueries(data.prompts); // Update state with the prompts
+        setQueries(data.prompts);
       } else {
         throw new Error("Unexpected response format: expected an array.");
       }
@@ -47,7 +50,7 @@ const PromptForm = () => {
 
   // Function to handle click on a box and set the form input
   const handleBoxClick = (query) => {
-    setInput(query); // Update input with the text from the clicked box
+    setInput(query);
   };
 
   return (
