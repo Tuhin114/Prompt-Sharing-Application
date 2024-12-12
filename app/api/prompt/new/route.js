@@ -2,7 +2,12 @@ import Prompt from "@models/prompt";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request) => {
-  const { userId, prompt, tag } = await request.json();
+  let { userId, prompt, tag } = await request.json();
+
+  // Ensure `tag` is an array of strings
+  if (!Array.isArray(tag)) {
+    tag = typeof tag === "string" ? tag.split(",").map((t) => t.trim()) : [];
+  }
 
   try {
     await connectToDB();

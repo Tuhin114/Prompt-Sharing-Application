@@ -11,6 +11,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const router = useRouter();
 
   const [copied, setCopied] = useState("");
+  console.log(post);
 
   const handleProfileClick = () => {
     console.log(post);
@@ -66,12 +67,17 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
       </div>
 
       <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
-      <p
-        className="font-inter text-sm blue_gradient cursor-pointer"
-        onClick={() => handleTagClick && handleTagClick(post.tag)}
-      >
-        #{post.tag}
-      </p>
+      <div className="flex flex-wrap gap-2">
+        {post.tag.map((eachTag, index) => (
+          <p
+            key={index}
+            className="font-inter text-sm blue_gradient cursor-pointer"
+            onClick={() => handleTagClick && handleTagClick(post.tag)}
+          >
+            #{eachTag}
+          </p>
+        ))}
+      </div>
 
       {session?.user.id === post.creator._id && pathName === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
