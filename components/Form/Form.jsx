@@ -10,6 +10,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [suggesting, setSuggesting] = useState(false);
   const [tagSuggesting, setTagSuggesting] = useState(false);
   const [queries, setQueries] = useState([]);
+  const [suggestedTags, setSuggestedTags] = useState([]);
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
   const [tagError, setTagError] = useState(null);
@@ -40,8 +41,10 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         <TagSuggestions
           post={post}
           setPost={setPost}
-          setTags={setTags}
           tags={tags}
+          setTags={setTags}
+          suggestedTags={suggestedTags}
+          setSuggestedTags={setSuggestedTags}
           tagSuggesting={tagSuggesting}
           setTagSuggesting={setTagSuggesting}
           setTagError={setTagError}

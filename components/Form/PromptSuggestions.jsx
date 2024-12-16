@@ -32,7 +32,7 @@ const PromptSuggestions = ({
   };
 
   const handlePromptClick = (query) => setPost({ ...post, prompt: query });
-
+  // console.log(post);
   return (
     <div className="flex gap-3">
       <div className="basis-7/12">
