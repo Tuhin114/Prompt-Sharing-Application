@@ -10,8 +10,39 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const pathName = usePathname();
   const router = useRouter();
 
+  const isAlreadyLiked = post.likes.includes(session?.user.id);
+  const initialTotalLikes = post.likes.length;
+  const bookmarked = true;
+
   const [copied, setCopied] = useState("");
-  console.log(post);
+  const [isLiked, setIsLiked] = useState(isAlreadyLiked);
+  const [totalLikes, setTotalLikes] = useState(initialTotalLikes);
+
+  const handleLikeOrUnlike = async () => {
+    try {
+      const response = await fetch(isLiked ? "/api/unlike" : "/api/like", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          promptId: post._id,
+          userId: session?.user.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to ${isLiked ? "unlike" : "like"} the post`);
+      } else {
+        console.log(`${isLiked ? "unliked" : "liked"} successfully`);
+      }
+
+      setIsLiked(!isLiked);
+      setTotalLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+    }
+  };
 
   const handleProfileClick = () => {
     console.log(post);
@@ -71,12 +102,57 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
         {post.tag.map((eachTag, index) => (
           <p
             key={index}
-            className="font-inter text-sm blue_gradient cursor-pointer"
+            className="inline-block cursor-pointer px-2 py-1  text-sm bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white"
             onClick={() => handleTagClick && handleTagClick(post.tag)}
           >
             #{eachTag}
           </p>
         ))}
+      </div>
+
+      <div className="h-[1px] w-full bg-gray-200 my-3"></div>
+
+      <div className="flex justify-between items-center gap-2 mt-5">
+        {isLiked ? (
+          <div className="flex-center gap-2" onClick={handleLikeOrUnlike}>
+            <Image
+              src="/assets/icons/heart-fill.svg"
+              alt="heart"
+              width={17}
+              height={17}
+            />
+            <span>{totalLikes}</span>
+          </div>
+        ) : (
+          <div className="flex-center gap-2" onClick={handleLikeOrUnlike}>
+            <Image
+              src="/assets/icons/heart.svg"
+              alt="heart"
+              width={17}
+              height={17}
+            />
+            <span>{totalLikes}</span>
+          </div>
+        )}
+
+        {bookmarked ? (
+          <div className="flex-center gap-1">
+            <Image
+              src="/assets/icons/bookmarked.svg"
+              alt="bookmark"
+              width={21}
+              height={21}
+            />
+            <span>12</span>
+          </div>
+        ) : (
+          <Image
+            src="/assets/icons/bookmark.svg"
+            alt="bookmark"
+            width={21}
+            height={21}
+          />
+        )}
       </div>
 
       {session?.user.id === post.creator._id && pathName === "/profile" && (

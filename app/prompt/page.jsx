@@ -34,7 +34,7 @@ const PromptForm = ({ value }) => {
       }
 
       const data = await response.json();
-      console.log("Response data:", data);
+      // console.log("Response data:", data);
 
       if (Array.isArray(data.prompts)) {
         setQueries(data.prompts);
