@@ -12,13 +12,17 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
   const isAlreadyLiked = post.likes.includes(session?.user.id);
   const initialTotalLikes = post.likes.length;
-  const bookmarked = true;
+  const isAlreadyBookmarked = post.saved.includes(session?.user.id);
+  const initialTotalBookmarks = post.saved.length;
 
   const [copied, setCopied] = useState("");
   const [isLiked, setIsLiked] = useState(isAlreadyLiked);
+  const [isBookmarked, setIsBookmarked] = useState(isAlreadyBookmarked);
   const [totalLikes, setTotalLikes] = useState(initialTotalLikes);
+  const [totalBookmarks, setTotalBookmarks] = useState(initialTotalBookmarks);
 
-  const handleLikeOrUnlike = async () => {
+  const handleLikeOrUnlike = async (e) => {
+    e.preventDefault();
     try {
       const response = await fetch(isLiked ? "/api/unlike" : "/api/like", {
         method: "PATCH",
@@ -39,6 +43,42 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
       setIsLiked(!isLiked);
       setTotalLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+    }
+  };
+
+  const handleBookmarkOrUnbookmark = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        isBookmarked ? "/api/unbookmark" : "/api/bookmark",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            promptId: post._id,
+            userId: session?.user.id,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to ${isBookmarked ? "unbookmark" : "bookmark"} the post`
+        );
+      } else {
+        console.log(
+          `${isBookmarked ? "unbookmarked" : "bookmarked"} successfully`
+        );
+      }
+
+      setIsBookmarked(!isBookmarked);
+      setTotalBookmarks((prevBookmarks) =>
+        isBookmarked ? prevBookmarks - 1 : prevBookmarks + 1
+      );
     } catch (error) {
       console.error(`Error: ${error.message}`);
     }
@@ -135,23 +175,32 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           </div>
         )}
 
-        {bookmarked ? (
-          <div className="flex-center gap-1">
+        {isBookmarked ? (
+          <div
+            className="flex-center gap-1"
+            onClick={handleBookmarkOrUnbookmark}
+          >
             <Image
               src="/assets/icons/bookmarked.svg"
               alt="bookmark"
               width={21}
               height={21}
             />
-            <span>12</span>
+            <span>{totalBookmarks}</span>
           </div>
         ) : (
-          <Image
-            src="/assets/icons/bookmark.svg"
-            alt="bookmark"
-            width={21}
-            height={21}
-          />
+          <div
+            className="flex-center gap-1"
+            onClick={handleBookmarkOrUnbookmark}
+          >
+            <Image
+              src="/assets/icons/bookmark.svg"
+              alt="bookmark"
+              width={21}
+              height={21}
+            />
+            <span>{totalBookmarks}</span>
+          </div>
         )}
       </div>
 
