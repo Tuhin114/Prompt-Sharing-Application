@@ -11,7 +11,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [tagSuggesting, setTagSuggesting] = useState(false);
   const [queries, setQueries] = useState([]);
   const [suggestedTags, setSuggestedTags] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(post.tag);
   const [error, setError] = useState(null);
   const [tagError, setTagError] = useState(null);
 

@@ -12,7 +12,7 @@ const UpdatePrompt = () => {
   const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
-  const [loading, setLoading] = useState(true); // Loading state for fetching prompt details
+  const [loading, setLoading] = useState(true);
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -22,15 +22,16 @@ const UpdatePrompt = () => {
       try {
         const response = await fetch(`/api/prompt/${promptId}`);
         const data = await response.json();
+        console.log(data);
 
         setPost({
           prompt: data.prompt,
           tag: data.tag,
         });
-        setLoading(false); // Data is ready
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch prompt details:", error);
-        setLoading(false); // Even in case of error, stop loading
+        setLoading(false);
       }
     };
 
@@ -75,7 +76,6 @@ const UpdatePrompt = () => {
   );
 };
 
-// Wrap UpdatePrompt in Suspense
 const SuspenseWrapper = () => (
   <Suspense fallback={<div>Loading component...</div>}>
     <UpdatePrompt />

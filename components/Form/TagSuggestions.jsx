@@ -33,7 +33,7 @@ const TagSuggestions = ({
       setTagSuggesting(false);
     }
   };
-  console.log(tags);
+  // console.log(tags);
   const handleTagClick = (tag) => {
     setTags([...tags, tag]);
     setSuggestedTags(suggestedTags.filter((t) => t !== tag));
