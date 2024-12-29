@@ -10,14 +10,17 @@ const MyProfile = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
+  const [loading, setLoading] = useState(false);
+
   const [myPosts, setMyPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       const response = await fetch(`/api/users/${session?.user.id}/posts`);
       const data = await response.json();
-
       setMyPosts(data);
+      setLoading(false);
     };
 
     if (session?.user.id) fetchPosts();
@@ -52,6 +55,8 @@ const MyProfile = () => {
       name="My"
       desc="Welcome to your personalized profile page. Share your exceptional prompts and inspire others with the power of your imagination"
       data={myPosts}
+      loading={loading}
+      setLoading={setLoading}
       handleEdit={handleEdit}
       handleDelete={handleDelete}
     />
