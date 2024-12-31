@@ -4,6 +4,10 @@ import { connectToDB } from "@utils/database";
 export const POST = async (request) => {
   let { userId, prompt, tag } = await request.json();
 
+  if (tag === "" || prompt === "") {
+    return new Response("Prompt and tag is required", { status: 400 });
+  }
+
   // Ensure `tag` is an array of strings
   if (!Array.isArray(tag)) {
     tag = typeof tag === "string" ? tag.split(",").map((t) => t.trim()) : [];
@@ -15,6 +19,7 @@ export const POST = async (request) => {
       creator: userId,
       prompt,
       tag,
+      isDraft: false,
       likes: [],
       saved: [],
     });

@@ -4,7 +4,7 @@ import { connectToDB } from "@utils/database";
 export const PATCH = async (request) => {
   try {
     const { promptId, userId } = await request.json();
-    console.log(promptId, userId);
+    // console.log(promptId, userId);
     if (!promptId || !userId) {
       return new Response("Missing promptId or userId", { status: 400 });
     }

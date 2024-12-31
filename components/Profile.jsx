@@ -15,7 +15,6 @@ const Profile = ({
 
   const [postsData, setPostsData] = useState([]);
   const [loading, setLocalLoading] = useState(initialLoading || true);
-  true;
   const [activeTab, setActiveTab] = useState("My Posts");
 
   useEffect(() => {
@@ -52,6 +51,27 @@ const Profile = ({
     setLocalLoading(false);
   };
 
+  const handleMyDrafts = async () => {
+    if (activeTab === "My Drafts") return;
+
+    setLoading(true);
+    setLocalLoading(true);
+    try {
+      const response = await fetch(`/api/users/${session?.user.id}/drafts`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch draft posts");
+      }
+      const draftPosts = await response.json();
+      setPostsData(draftPosts);
+      setActiveTab("My Drafts");
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+      setLocalLoading(false);
+    }
+  };
+
   return (
     <section className="w-full">
       <h1 className="head_text text-left">
@@ -59,7 +79,7 @@ const Profile = ({
       </h1>
       <p className="desc text-left">{desc}</p>
 
-      {/* Tabs for My Posts and Saved Posts */}
+      {/* Tabs for My Posts, Saved Posts, and My Drafts */}
       <div className="flex justify-start gap-2 mt-8">
         <div
           className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
@@ -80,6 +100,16 @@ const Profile = ({
           onClick={handleSaved}
         >
           Saved Posts
+        </div>
+        <div
+          className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
+            activeTab === "My Drafts"
+              ? "bg-primary-orange"
+              : "bg-gray-300 text-gray-700"
+          }`}
+          onClick={handleMyDrafts}
+        >
+          My Drafts
         </div>
       </div>
 

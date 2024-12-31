@@ -1,22 +1,48 @@
-// components/Form/Form.jsx
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PromptSuggestions from "./PromptSuggestions";
 import TagSuggestions from "./TagSuggestions";
 
-const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
+const Form = ({
+  type,
+  post,
+  setPost,
+  submitting,
+  handleSubmit,
+  handleSaveDraft,
+}) => {
+  const router = useRouter();
+
   const [suggesting, setSuggesting] = useState(false);
   const [tagSuggesting, setTagSuggesting] = useState(false);
   const [queries, setQueries] = useState([]);
   const [suggestedTags, setSuggestedTags] = useState([]);
-  const [tags, setTags] = useState(post.tag);
+  const [tags, setTags] = useState(post?.tag || []);
   const [error, setError] = useState(null);
   const [tagError, setTagError] = useState(null);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+
+  const handleDraftClick = async (e) => {
+    e.preventDefault(); // Prevent default form behavior
+    await handleSaveDraft();
+  };
+
+  const handleCancel = () => {
+    router.push("/");
+  };
+
+  // Enable/Disable Submit Button based on validations
+  useEffect(() => {
+    const isPromptValid = post?.prompt?.trim().length > 0; // Ensure prompt is not empty or whitespace
+    const isTagValid = tags.length > 0; // Ensure at least one tag is added
+    setIsSubmitDisabled(!(isPromptValid && isTagValid));
+  }, [post.prompt, tags]);
 
   return (
-    <div className="flex-col flex-start w-full">
+    <div className="flex flex-col items-start w-full">
+      {/* Header */}
       <h1 className="head_text text-left">
         <span className="blue_gradient">{type} Post</span>
       </h1>
@@ -25,7 +51,14 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         imagination run wild with any AI-powered platform.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-10 w-full">
+      {/* Form */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(e);
+        }}
+        className="mt-10 w-full"
+      >
         {/* Prompt Input */}
         <PromptSuggestions
           post={post}
@@ -50,15 +83,30 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
           setTagError={setTagError}
         />
 
-        {/* Submit and Cancel Buttons */}
-        <div className="flex justify-end gap-4 mt-5">
-          <Link href="/" className="text-gray-500 text-sm">
+        {/* Buttons */}
+        <div className="flex gap-3 justify-center p-4 mt-5">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="text-gray-500 text-sm"
+          >
             Cancel
-          </Link>
+          </button>
+          <button
+            type="button"
+            onClick={handleDraftClick}
+            className="px-5 py-1.5 text-sm bg-orange-400 hover:bg-orange-500 rounded-full text-white"
+          >
+            Save as Draft
+          </button>
           <button
             type="submit"
-            disabled={submitting}
-            className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
+            disabled={submitting || isSubmitDisabled}
+            className={`px-5 py-1.5 text-sm rounded-full text-white ${
+              submitting || isSubmitDisabled
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-primary-orange hover:bg-orange-500"
+            }`}
           >
             {submitting ? `${type}ing...` : type}
           </button>
