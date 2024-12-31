@@ -10,7 +10,7 @@ export const GET = async () => {
       .populate("creator")
       .sort({ likes: -1 });
 
-    console.log(sortedPosts);
+    // console.log(sortedPosts);
     return new Response(JSON.stringify(sortedPosts), { status: 200 });
   } catch (error) {
     return new Response("Failed to fetch posts sorted by likes", {

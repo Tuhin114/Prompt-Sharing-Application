@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
 import SortDropdown from "./Sortdown";
+import TrendingTags from "./TrendingTags";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className="mt-16 prompt_layout">
+    <div className="mt-8 prompt_layout">
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -23,7 +24,7 @@ const Feed = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
-  const [sortBy, setSortBy] = useState(""); // State for sorting
+  const [sortBy, setSortBy] = useState("");
   const [loading, setLoading] = useState(false);
 
   const fetchPosts = async () => {
@@ -90,6 +91,16 @@ const Feed = () => {
     setFilteredPosts(searchResult);
   };
 
+  const filterTrendingTags = (searchtext) => {
+    const regex = new RegExp(searchtext, "i");
+    return allPosts.filter((item) => regex.test(item.tag));
+  };
+
+  const handleTrendingTagClick = (tagName) => {
+    const searchResult = filterTrendingTags(tagName);
+    setFilteredPosts(searchResult);
+  };
+
   const handleSortChange = (e) => {
     const selectedSort = e.target.value;
     setSortBy(selectedSort);
@@ -122,7 +133,8 @@ const Feed = () => {
         </div>
       </div>
 
-      {/* Loading State */}
+      <TrendingTags handleTrendingTagClick={handleTrendingTagClick} />
+
       {loading ? (
         <div className="text-center mt-8">Loading...</div>
       ) : (
