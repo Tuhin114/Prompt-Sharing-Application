@@ -5,14 +5,24 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
-const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
+const PromptCard = ({
+  post,
+  handleEdit,
+  handleDelete,
+  handleTagClick,
+  isEdit,
+  isDelete,
+  isLike,
+  isSave,
+  isView,
+}) => {
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
 
-  const isAlreadyLiked = post.likes.includes(session?.user.id);
+  const isAlreadyLiked = post.likes.includes(session?.user?.id);
   const initialTotalLikes = post.likes.length;
-  const isAlreadyBookmarked = post.saved.includes(session?.user.id);
+  const isAlreadyBookmarked = post.saved.includes(session?.user?.id);
   const initialTotalBookmarks = post.saved.length;
 
   const [copied, setCopied] = useState("");
@@ -23,6 +33,8 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
   const handleLikeOrUnlike = async (e) => {
     e.preventDefault();
+    if (!session?.user?.id) return;
+
     try {
       const response = await fetch(isLiked ? "/api/unlike" : "/api/like", {
         method: "PATCH",
@@ -31,14 +43,12 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
         },
         body: JSON.stringify({
           promptId: post._id,
-          userId: session?.user.id,
+          userId: session.user.id,
         }),
       });
 
       if (!response.ok) {
         throw new Error(`Failed to ${isLiked ? "unlike" : "like"} the post`);
-      } else {
-        console.log(`${isLiked ? "unliked" : "liked"} successfully`);
       }
 
       setIsLiked(!isLiked);
@@ -50,6 +60,8 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
   const handleBookmarkOrUnbookmark = async (e) => {
     e.preventDefault();
+    if (!session?.user?.id) return;
+
     try {
       const response = await fetch(
         isBookmarked ? "/api/unbookmark" : "/api/bookmark",
@@ -60,7 +72,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           },
           body: JSON.stringify({
             promptId: post._id,
-            userId: session?.user.id,
+            userId: session.user.id,
           }),
         }
       );
@@ -68,10 +80,6 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
       if (!response.ok) {
         throw new Error(
           `Failed to ${isBookmarked ? "unbookmark" : "bookmark"} the post`
-        );
-      } else {
-        console.log(
-          `${isBookmarked ? "unbookmarked" : "bookmarked"} successfully`
         );
       }
 
@@ -85,11 +93,11 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   };
 
   const handleProfileClick = () => {
-    console.log(post);
-
-    if (post.creator._id === session?.user.id) return router.push("/profile");
-
-    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    if (post.creator._id === session?.user?.id) {
+      router.push("/profile");
+    } else {
+      router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    }
   };
 
   const handleCopy = () => {
@@ -100,6 +108,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
   return (
     <div className="prompt_card">
+      {/* User Info */}
       <div className="flex justify-between items-start gap-5">
         <div
           className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
@@ -112,7 +121,6 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
             height={40}
             className="rounded-full object-contain"
           />
-
           <div className="flex flex-col">
             <h3 className="font-satoshi font-semibold text-gray-900">
               {post.creator.username}
@@ -122,7 +130,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
             </p>
           </div>
         </div>
-
+        {/* Copy Button */}
         <div className="copy_btn" onClick={handleCopy}>
           <Image
             src={
@@ -137,87 +145,85 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
         </div>
       </div>
 
+      {/* Prompt Content */}
       <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+
+      {/* Tags */}
       <div className="flex flex-wrap gap-2">
         {post.tag.map((eachTag, index) => (
           <p
             key={index}
-            className="inline-block cursor-pointer px-2 py-1  text-sm bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white"
-            onClick={() => handleTagClick && handleTagClick(post.tag)}
+            className="inline-block cursor-pointer px-2 py-1 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white"
+            onClick={() => handleTagClick && handleTagClick(eachTag)}
           >
             #{eachTag}
           </p>
         ))}
       </div>
 
-      <div className="h-[1px] w-full bg-gray-200 my-3"></div>
-
-      <div className="flex justify-between items-center gap-2 mt-5">
-        {isLiked ? (
+      {/* Actions */}
+      {isLike && isSave && (
+        <div className="flex justify-between items-center gap-2 mt-5">
           <div className="flex-center gap-2" onClick={handleLikeOrUnlike}>
             <Image
-              src="/assets/icons/heart-fill.svg"
+              src={
+                isLiked
+                  ? "/assets/icons/heart-fill.svg"
+                  : "/assets/icons/heart.svg"
+              }
               alt="heart"
               width={17}
               height={17}
             />
             <span>{totalLikes}</span>
           </div>
-        ) : (
-          <div className="flex-center gap-2" onClick={handleLikeOrUnlike}>
-            <Image
-              src="/assets/icons/heart.svg"
-              alt="heart"
-              width={17}
-              height={17}
-            />
-            <span>{totalLikes}</span>
-          </div>
-        )}
 
-        {isBookmarked ? (
           <div
             className="flex-center gap-1"
             onClick={handleBookmarkOrUnbookmark}
           >
             <Image
-              src="/assets/icons/bookmarked.svg"
+              src={
+                isBookmarked
+                  ? "/assets/icons/bookmarked.svg"
+                  : "/assets/icons/bookmark.svg"
+              }
               alt="bookmark"
               width={21}
               height={21}
             />
             <span>{totalBookmarks}</span>
           </div>
-        ) : (
-          <div
-            className="flex-center gap-1"
-            onClick={handleBookmarkOrUnbookmark}
-          >
-            <Image
-              src="/assets/icons/bookmark.svg"
-              alt="bookmark"
-              width={21}
-              height={21}
-            />
-            <span>{totalBookmarks}</span>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {session?.user.id === post.creator._id && pathName === "/profile" && (
-        <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
-          <p
-            className="font-inter text-sm green_gradient cursor-pointer"
-            onClick={handleEdit}
-          >
-            Edit
-          </p>
-          <p
-            className="font-inter text-sm orange_gradient cursor-pointer"
-            onClick={handleDelete}
-          >
-            Delete
-          </p>
+      {/* Edit and Delete and View Actions */}
+      {session?.user?.id === post.creator._id && pathName === "/profile" && (
+        <div className="flex-center gap-4 border-t border-gray-100 pt-3">
+          {isEdit && (
+            <p
+              className="font-inter text-sm green_gradient cursor-pointer"
+              onClick={handleEdit}
+            >
+              Edit
+            </p>
+          )}
+          {isView && (
+            <p
+              className="font-inter text-sm green_gradient  cursor-pointer"
+              onClick={handleDelete}
+            >
+              View
+            </p>
+          )}
+          {isDelete && (
+            <p
+              className="font-inter text-sm orange_gradient cursor-pointer"
+              onClick={handleDelete}
+            >
+              Delete
+            </p>
+          )}
         </div>
       )}
     </div>

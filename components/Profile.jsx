@@ -13,10 +13,19 @@ const Profile = ({
 }) => {
   const { data: session } = useSession();
 
+  const isEdit = true;
+  const isDelete = true;
+
+  const isLike = true;
+  const isSave = true;
+
+  const isView = true;
+
   const [postsData, setPostsData] = useState([]);
   const [loading, setLocalLoading] = useState(initialLoading || true);
   const [activeTab, setActiveTab] = useState("My Posts");
 
+  // Load "My Posts" on initial render or tab switch
   useEffect(() => {
     if (data && activeTab === "My Posts") {
       setPostsData(data);
@@ -24,6 +33,7 @@ const Profile = ({
     }
   }, [data, activeTab]);
 
+  // Handle fetching Saved Posts
   const handleSaved = async () => {
     if (activeTab === "Saved Posts") return;
 
@@ -31,9 +41,8 @@ const Profile = ({
     setLocalLoading(true);
     try {
       const response = await fetch(`/api/users/${session?.user.id}/saved`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch saved posts");
-      }
+      if (!response.ok) throw new Error("Failed to fetch saved posts");
+
       const savedPosts = await response.json();
       setPostsData(savedPosts);
       setActiveTab("Saved Posts");
@@ -45,12 +54,7 @@ const Profile = ({
     }
   };
 
-  const handleMyPosts = () => {
-    setPostsData(data);
-    setActiveTab("My Posts");
-    setLocalLoading(false);
-  };
-
+  // Handle fetching My Drafts
   const handleMyDrafts = async () => {
     if (activeTab === "My Drafts") return;
 
@@ -58,9 +62,8 @@ const Profile = ({
     setLocalLoading(true);
     try {
       const response = await fetch(`/api/users/${session?.user.id}/drafts`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch draft posts");
-      }
+      if (!response.ok) throw new Error("Failed to fetch draft posts");
+
       const draftPosts = await response.json();
       setPostsData(draftPosts);
       setActiveTab("My Drafts");
@@ -72,6 +75,13 @@ const Profile = ({
     }
   };
 
+  // Handle switching to My Posts
+  const handleMyPosts = () => {
+    setPostsData(data);
+    setActiveTab("My Posts");
+    setLocalLoading(false);
+  };
+
   return (
     <section className="w-full">
       <h1 className="head_text text-left">
@@ -81,38 +91,28 @@ const Profile = ({
 
       {/* Tabs for My Posts, Saved Posts, and My Drafts */}
       <div className="flex justify-start gap-2 mt-8">
-        <div
-          className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
-            activeTab === "My Posts"
-              ? "bg-primary-orange"
-              : "bg-gray-300 text-gray-700"
-          }`}
-          onClick={handleMyPosts}
-        >
-          My Posts
-        </div>
-        <div
-          className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
-            activeTab === "Saved Posts"
-              ? "bg-primary-orange"
-              : "bg-gray-300 text-gray-700"
-          }`}
-          onClick={handleSaved}
-        >
-          Saved Posts
-        </div>
-        <div
-          className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
-            activeTab === "My Drafts"
-              ? "bg-primary-orange"
-              : "bg-gray-300 text-gray-700"
-          }`}
-          onClick={handleMyDrafts}
-        >
-          My Drafts
-        </div>
+        {["My Posts", "Saved Posts", "My Drafts"].map((tab) => (
+          <div
+            key={tab}
+            className={`px-5 py-1.5 text-sm cursor-pointer font-semibold rounded-full text-white ${
+              activeTab === tab
+                ? "bg-primary-orange"
+                : "bg-gray-300 text-gray-700"
+            }`}
+            onClick={
+              tab === "My Posts"
+                ? handleMyPosts
+                : tab === "Saved Posts"
+                ? handleSaved
+                : handleMyDrafts
+            }
+          >
+            {tab}
+          </div>
+        ))}
       </div>
 
+      {/* Loading State */}
       {loading || initialLoading || loading === undefined ? (
         <div className="text-center mt-8">Loading...</div>
       ) : (
@@ -122,6 +122,21 @@ const Profile = ({
               <PromptCard
                 key={post._id}
                 post={post}
+                isLike={
+                  activeTab === "My Drafts" ? isLike === false : isLike === true
+                }
+                isSave={
+                  activeTab === "My Drafts" ? isSave === false : isSave === true
+                }
+                isEdit={
+                  activeTab === "My Posts" ? isEdit === true : isEdit === false
+                }
+                isDelete={
+                  activeTab === "Saved Posts"
+                    ? isDelete === false
+                    : isDelete === true
+                }
+                isView={activeTab === "My Drafts" ? isView : isView === false}
                 handleEdit={() => handleEdit && handleEdit(post)}
                 handleDelete={() => handleDelete && handleDelete(post)}
               />
