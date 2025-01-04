@@ -25,7 +25,7 @@ const Form = ({
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
   const handleDraftClick = async (e) => {
-    e.preventDefault(); // Prevent default form behavior
+    e.preventDefault();
     await handleSaveDraft();
   };
 
@@ -33,10 +33,9 @@ const Form = ({
     router.push("/");
   };
 
-  // Enable/Disable Submit Button based on validations
   useEffect(() => {
-    const isPromptValid = post?.prompt?.trim().length > 0; // Ensure prompt is not empty or whitespace
-    const isTagValid = tags.length > 0; // Ensure at least one tag is added
+    const isPromptValid = post?.prompt?.trim().length > 0;
+    const isTagValid = tags.length > 0;
     setIsSubmitDisabled(!(isPromptValid && isTagValid));
   }, [post.prompt, tags]);
 

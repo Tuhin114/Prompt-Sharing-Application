@@ -9,6 +9,7 @@ const PromptCard = ({
   post,
   handleEdit,
   handleDelete,
+  handleView,
   handleTagClick,
   isEdit,
   isDelete,
@@ -211,7 +212,7 @@ const PromptCard = ({
           {isView && (
             <p
               className="font-inter text-sm green_gradient  cursor-pointer"
-              onClick={handleDelete}
+              onClick={handleView}
             >
               View
             </p>

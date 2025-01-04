@@ -30,6 +30,10 @@ const MyProfile = () => {
     router.push(`/update-prompt?id=${post._id}`);
   };
 
+  const handleView = (post) => {
+    router.push(`/drafts?id=${post._id}`);
+  };
+
   const handleDelete = async (post) => {
     const hasConfirmed = confirm(
       "Are you sure you want to delete this prompt?"
@@ -58,6 +62,7 @@ const MyProfile = () => {
       loading={loading}
       setLoading={setLoading}
       handleEdit={handleEdit}
+      handleView={handleView}
       handleDelete={handleDelete}
     />
   );

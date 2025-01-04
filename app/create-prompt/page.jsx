@@ -72,6 +72,7 @@ const CreatePrompt = () => {
         throw new Error("Failed to save draft");
       }
 
+      router.push("/");
       console.log("Draft saved successfully");
     } catch (error) {
       console.error("Failed to save draft:", error);

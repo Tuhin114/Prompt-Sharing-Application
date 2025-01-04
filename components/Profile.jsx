@@ -10,6 +10,7 @@ const Profile = ({
   setLoading,
   handleEdit,
   handleDelete,
+  handleView,
 }) => {
   const { data: session } = useSession();
 
@@ -54,7 +55,6 @@ const Profile = ({
     }
   };
 
-  // Handle fetching My Drafts
   const handleMyDrafts = async () => {
     if (activeTab === "My Drafts") return;
 
@@ -122,21 +122,12 @@ const Profile = ({
               <PromptCard
                 key={post._id}
                 post={post}
-                isLike={
-                  activeTab === "My Drafts" ? isLike === false : isLike === true
-                }
-                isSave={
-                  activeTab === "My Drafts" ? isSave === false : isSave === true
-                }
-                isEdit={
-                  activeTab === "My Posts" ? isEdit === true : isEdit === false
-                }
-                isDelete={
-                  activeTab === "Saved Posts"
-                    ? isDelete === false
-                    : isDelete === true
-                }
-                isView={activeTab === "My Drafts" ? isView : isView === false}
+                isLike={activeTab === "My Drafts" ? !isLike : isLike}
+                isSave={activeTab === "My Drafts" ? !isSave : isSave}
+                isEdit={activeTab === "My Posts" ? isEdit : !isEdit}
+                isDelete={activeTab === "Saved Posts" ? !isDelete : isDelete}
+                isView={activeTab === "My Drafts" ? isView : !isView}
+                handleView={() => handleView && handleView(post)}
                 handleEdit={() => handleEdit && handleEdit(post)}
                 handleDelete={() => handleDelete && handleDelete(post)}
               />
