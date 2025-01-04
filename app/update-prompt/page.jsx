@@ -50,6 +50,7 @@ const UpdatePrompt = () => {
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
+          isDraft: false,
         }),
       });
 

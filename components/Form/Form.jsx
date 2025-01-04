@@ -91,13 +91,15 @@ const Form = ({
           >
             Cancel
           </button>
-          <button
-            type="button"
-            onClick={handleDraftClick}
-            className="px-5 py-1.5 text-sm bg-orange-400 hover:bg-orange-500 rounded-full text-white"
-          >
-            Save as Draft
-          </button>
+          {handleSaveDraft && (
+            <button
+              type="button"
+              onClick={handleDraftClick}
+              className="px-5 py-1.5 text-sm bg-orange-400 hover:bg-orange-500 rounded-full text-white"
+            >
+              Save as Draft
+            </button>
+          )}
           <button
             type="submit"
             disabled={submitting || isSubmitDisabled}
