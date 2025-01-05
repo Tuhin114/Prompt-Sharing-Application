@@ -132,18 +132,20 @@ const PromptCard = ({
           </div>
         </div>
         {/* Copy Button */}
-        <div className="copy_btn" onClick={handleCopy}>
-          <Image
-            src={
-              copied === post.prompt
-                ? "/assets/icons/tick.svg"
-                : "/assets/icons/copy.svg"
-            }
-            alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
-            width={12}
-            height={12}
-          />
-        </div>
+        {post.prompt !== "" && (
+          <div className="copy_btn" onClick={handleCopy}>
+            <Image
+              src={
+                copied === post.prompt
+                  ? "/assets/icons/tick.svg"
+                  : "/assets/icons/copy.svg"
+              }
+              alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
+              width={12}
+              height={12}
+            />
+          </div>
+        )}
       </div>
 
       {/* Prompt Content */}
