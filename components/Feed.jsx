@@ -6,12 +6,16 @@ import SortDropdown from "./Sortdown";
 import TrendingTags from "./TrendingTags";
 
 const PromptCardList = ({ data, handleTagClick }) => {
+  const isLike = true;
+  const isSave = true;
   return (
     <div className="mt-8 prompt_layout">
       {data.map((post) => (
         <PromptCard
           key={post._id}
           post={post}
+          isLike={isLike}
+          isSave={isSave}
           handleTagClick={handleTagClick}
         />
       ))}
@@ -86,9 +90,9 @@ const Feed = () => {
   };
 
   const handleClearSearch = () => {
-    clearTimeout(searchTimeout); // Clear any ongoing timeout
-    setSearchText(""); // Clear the search text
-    setFilteredPosts(allPosts); // Reset to all posts
+    clearTimeout(searchTimeout);
+    setSearchText("");
+    setFilteredPosts(allPosts);
   };
 
   const handleTagClick = (tagName) => {
