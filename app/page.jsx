@@ -1,5 +1,4 @@
 import Feed from "@components/Feed";
-import TrendingTags from "@components/TrendingTags";
 
 const Home = () => {
   return (

@@ -85,6 +85,12 @@ const Feed = () => {
     );
   };
 
+  const handleClearSearch = () => {
+    clearTimeout(searchTimeout); // Clear any ongoing timeout
+    setSearchText(""); // Clear the search text
+    setFilteredPosts(allPosts); // Reset to all posts
+  };
+
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
     const searchResult = filterPrompts(tagName);
@@ -92,6 +98,7 @@ const Feed = () => {
   };
 
   const filterTrendingTags = (searchtext) => {
+    setSearchText(searchtext);
     const regex = new RegExp(searchtext, "i");
     return allPosts.filter((item) => regex.test(item.tag));
   };
@@ -123,8 +130,17 @@ const Feed = () => {
             value={searchText}
             onChange={handleSearchChange}
             required
-            className="search_input peer"
+            className="search_input peer pr-10"
           />
+          {searchText && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              ✖️
+            </button>
+          )}
         </form>
 
         {/* Sort Dropdown */}
