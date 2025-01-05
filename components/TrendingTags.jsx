@@ -16,7 +16,7 @@ const TrendingTags = ({ handleTrendingTagClick }) => {
         const formattedTags = data.map((tag) => ({
           name: tag._id,
           count: tag.count,
-          trend: "up", // Example static trend, you can dynamically calculate this if required
+          trend: "up",
         }));
 
         setTrendingTags(formattedTags);
