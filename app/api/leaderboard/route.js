@@ -18,15 +18,15 @@ export async function GET(req) {
     const leaderboard = await Prompt.aggregate([
       {
         $group: {
-          _id: "$creator", // Group by creator (user ID)
-          totalLikes: { $sum: { $size: "$likes" } }, // Sum likes array length
-          totalBookmarks: { $sum: { $size: "$saved" } }, // Sum bookmarks array length
-          totalPosts: { $sum: 1 }, // Count documents per creator
+          _id: "$creator",
+          totalLikes: { $sum: { $size: "$likes" } },
+          totalBookmarks: { $sum: { $size: "$saved" } },
+          totalPosts: { $sum: 1 },
         },
       },
       {
         $lookup: {
-          from: "users", // Assuming your user collection is named 'users'
+          from: "users",
           localField: "_id",
           foreignField: "_id",
           as: "user",
