@@ -1,4 +1,5 @@
 import Prompt from "@models/prompt";
+import User from "@models/user";
 import { connectToDB } from "@utils/database";
 
 export const PATCH = async (request) => {
@@ -19,6 +20,14 @@ export const PATCH = async (request) => {
     if (prompt.likes.includes(userId)) {
       prompt.likes = prompt.likes.filter((id) => id.toString() !== userId);
       await prompt.save();
+      const creator = await User.findById(prompt.creator);
+      if (creator) {
+        creator.coins = Math.max(0, creator.coins - 1); // Ensure coins don’t go negative
+        await creator.save();
+        console.log(
+          `1 coin deducted from user ${creator._id}. New balance: ${creator.coins}`
+        );
+      }
       return new Response(JSON.stringify({ message: "Unliked successfully" }), {
         status: 200,
       });

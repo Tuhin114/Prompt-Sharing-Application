@@ -1,4 +1,5 @@
 import Prompt from "@models/prompt";
+import User from "@models/user";
 import { connectToDB } from "@utils/database";
 
 // 🟢 GET: Fetch a Single Prompt by ID
@@ -57,10 +58,34 @@ export const PATCH = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
   try {
     await connectToDB();
-    // Find the prompt by ID and remove it
+
+    // Find the prompt by ID
+    const prompt = await Prompt.findById(params.id);
+    if (!prompt) {
+      return new Response("Prompt not found", { status: 404 });
+    }
+
+    // Identify the creator and deduct 1 coin
+    const creator = await User.findById(prompt.creator);
+    if (creator) {
+      creator.coins = Math.max(0, creator.coins - 1); // Ensure coins don’t go negative
+      await creator.save();
+      console.log(
+        `1 coin deducted from user ${creator._id}. New balance: ${creator.coins}`
+      );
+    }
+
+    // Delete the prompt
     await Prompt.findByIdAndDelete(params.id);
-    return new Response("Prompt deleted successfully", { status: 200 });
+
+    return new Response(
+      JSON.stringify({
+        message: "Prompt deleted and 1 coin deducted from creator.",
+      }),
+      { status: 200 }
+    );
   } catch (error) {
+    console.error("Error deleting prompt:", error.message);
     return new Response("Error deleting prompt", { status: 500 });
   }
 };

@@ -17,6 +17,10 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  coins: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = models.User || model("User", UserSchema);

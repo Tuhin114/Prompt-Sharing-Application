@@ -1,4 +1,5 @@
 import Prompt from "@models/prompt";
+import User from "@models/user";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request, { params }) => {
@@ -11,6 +12,15 @@ export const POST = async (request, { params }) => {
   // Ensure `tag` is an array of strings
   if (!Array.isArray(tag)) {
     tag = typeof tag === "string" ? tag.split(",").map((t) => t.trim()) : [];
+  }
+
+  const creator = await User.findById(userId);
+  if (creator) {
+    creator.coins += 1; // Add 1 coin per post
+    await creator.save();
+    console.log(
+      `Coins updated for user ${creator._id}. New balance: ${creator.coins}`
+    );
   }
 
   try {
