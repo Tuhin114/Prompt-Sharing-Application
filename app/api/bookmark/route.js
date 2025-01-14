@@ -1,5 +1,6 @@
 import Prompt from "@models/prompt";
 import User from "@models/user";
+import Notification from "@models/notification"; // Import the notification model
 import { connectToDB } from "@utils/database";
 
 export const PATCH = async (request) => {
@@ -13,7 +14,6 @@ export const PATCH = async (request) => {
     await connectToDB();
 
     const prompt = await Prompt.findById(promptId);
-    // console.log(prompt);
     if (!prompt) {
       return new Response("Prompt not found", { status: 404 });
     }
@@ -26,16 +26,44 @@ export const PATCH = async (request) => {
       if (creator) {
         creator.coins += 2; // Add 2 coins per bookmark
         await creator.save();
+
         console.log(
           `Coins updated for user ${creator._id}. New balance: ${creator.coins}`
         );
+
+        // Send notifications
+        const user = await User.findById(userId); // Fetch the user who bookmarked
+
+        if (user) {
+          // 1. Bookmark Notification
+          await Notification.create({
+            recipient: creator._id,
+            senderId: userId,
+            type: "bookmark",
+            message: `${user.username} bookmarked your post.`,
+            promptId,
+            isRead: false,
+          });
+
+          // 2. Coin Notification
+          await Notification.create({
+            recipient: creator._id,
+            senderId: userId,
+            type: "coin",
+            message: "You earned 2 coins for the bookmark on your post.",
+            promptId,
+            isRead: false,
+          });
+
+          console.log(
+            `Notifications sent to user ${creator._id} for bookmark and coin reward.`
+          );
+        }
       }
 
       return new Response(
         JSON.stringify({ message: "Bookmarked successfully" }),
-        {
-          status: 200,
-        }
+        { status: 200 }
       );
     } else {
       return new Response("User has already bookmarked this prompt", {
@@ -43,6 +71,7 @@ export const PATCH = async (request) => {
       });
     }
   } catch (error) {
+    console.error("Error in bookmark route:", error.message);
     return new Response("Failed to bookmark the prompt", { status: 500 });
   }
 };
