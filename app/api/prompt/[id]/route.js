@@ -65,16 +65,6 @@ export const DELETE = async (request, { params }) => {
       return new Response("Prompt not found", { status: 404 });
     }
 
-    // Identify the creator and deduct 1 coin
-    const creator = await User.findById(prompt.creator);
-    if (creator) {
-      creator.coins = Math.max(0, creator.coins - 1); // Ensure coins don’t go negative
-      await creator.save();
-      console.log(
-        `1 coin deducted from user ${creator._id}. New balance: ${creator.coins}`
-      );
-    }
-
     // Delete the prompt
     await Prompt.findByIdAndDelete(params.id);
 

@@ -1,6 +1,6 @@
 import Prompt from "@models/prompt";
 import User from "@models/user";
-import Notification from "@models/notification"; // Import the notification model
+import Notification from "@models/notification";
 import { connectToDB } from "@utils/database";
 
 export const PATCH = async (request) => {
@@ -44,20 +44,6 @@ export const PATCH = async (request) => {
             promptId,
             isRead: false,
           });
-
-          // 2. Coin Notification
-          await Notification.create({
-            recipient: creator._id,
-            senderId: userId,
-            type: "coin",
-            message: "You earned 2 coins for the bookmark on your post.",
-            promptId,
-            isRead: false,
-          });
-
-          console.log(
-            `Notifications sent to user ${creator._id} for bookmark and coin reward.`
-          );
         }
       }
 

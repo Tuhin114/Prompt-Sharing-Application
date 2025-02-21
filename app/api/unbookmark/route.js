@@ -20,15 +20,6 @@ export const PATCH = async (request) => {
       prompt.saved = prompt.saved.filter((id) => id.toString() !== userId);
       await prompt.save();
 
-      const creator = await User.findById(prompt.creator);
-      if (creator) {
-        creator.coins = Math.max(0, creator.coins - 1);
-        await creator.save();
-        console.log(
-          `Coins updated for user ${creator._id}. New balance: ${creator.coins}`
-        );
-      }
-
       return new Response(
         JSON.stringify({ message: "Remove bookmark successfully" }),
         {

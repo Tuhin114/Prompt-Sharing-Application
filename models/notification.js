@@ -14,7 +14,7 @@ const notificationSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["like", "coin", "bookmark"],
+      enum: ["like", "bookmark"],
       required: true,
     },
     message: {

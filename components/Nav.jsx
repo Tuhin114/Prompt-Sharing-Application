@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
-import CoinDisplay from "./CoinDisplay";
-import Notification from "./Notification";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -37,15 +35,11 @@ const Nav = () => {
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <CoinDisplay />
             <Link href="/dashboard" className="black_btn">
               Dashboard
             </Link>
             <Link href="/leaderboard" className="black_btn">
               Leader Board
-            </Link>
-            <Link href="/notifications" className="black_btn">
-              🔔 Notifications
             </Link>
 
             <Link href="/create-prompt" className="black_btn">

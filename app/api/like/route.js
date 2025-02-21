@@ -50,19 +50,6 @@ export const PATCH = async (request) => {
         );
 
         // console.log(likeNotification);
-
-        // 2nd Notification: +3 Coins
-        const coinNotification = new Notification({
-          recipient: creator._id,
-          type: "coin",
-          message: `You earned 3 coins for the like on your post. 💰`,
-          promptId: prompt._id,
-          senderId: sender._id,
-        });
-        await coinNotification.save();
-        console.log(
-          `Coin notification sent to ${creator._id} about the coin reward.`
-        );
       }
 
       return new Response(
