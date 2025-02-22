@@ -10,7 +10,7 @@ export async function GET(req) {
       { $unwind: "$tag" }, // Deconstruct the array of tags
       { $group: { _id: "$tag", count: { $sum: 1 } } }, // Group and count each tag
       { $sort: { count: -1 } }, // Sort by count descending
-      { $limit: 10 }, // Limit to top 10 tags
+      { $limit: 12 }, // Limit to top 10 tags
     ]);
 
     return new Response(JSON.stringify(trendingTags), { status: 200 });

@@ -45,17 +45,17 @@ const TrendingTags = ({ handleTrendingTagClick }) => {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto my-8 bg-white shadow-lg rounded-lg p-6">
+    <div className="my-8 p-6 w-full rounded-lg border border-gray-300 bg-white/20 bg-clip-padding backdrop-blur-lg backdrop-filter">
       <div className="flex flex-row items-center gap-2 text-xl font-semibold text-gray-800">
         <TrendingUp className="w-5 h-5 text-orange-500" />
         <h2>Trending Tags</h2>
       </div>
       <div className="mt-6">
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           {trendingTags.map((tag) => (
             <button
               key={tag.name}
-              className="group relative px-6 py-3 bg-gradient-to-r from-orange-200 to-purple-300 hover:from-orange-300 hover:to-purple-400 rounded-full transition-all duration-300 ease-in-out"
+              className="group relative px-5 py-3 bg-gradient-to-r from-orange-200 to-purple-300 hover:from-orange-300 hover:to-purple-400 rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center"
               onClick={() => handleTrendingTagClick(tag.name)}
             >
               <span className="text-sm font-medium text-gray-800">
