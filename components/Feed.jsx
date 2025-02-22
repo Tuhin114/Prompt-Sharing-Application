@@ -125,22 +125,21 @@ const Feed = () => {
 
   return (
     <section className="feed">
-      <div className="flex gap-2">
-        {/* Search Input */}
-        <form className="relative w-64 flex-center mb-4 basis-10/12">
+      <div className="w-full flex items-center justify-center gap-2 px-36">
+        <form className="relative flex-1">
           <input
             type="text"
             placeholder="Search for a tag or a username"
             value={searchText}
             onChange={handleSearchChange}
             required
-            className="search_input peer pr-10"
+            className="w-full px-4 py-3 rounded-lg bg-white/70 backdrop-blur-lg shadow-md border border-gray-300"
           />
           {searchText && (
             <button
               type="button"
               onClick={handleClearSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all"
             >
               ✖️
             </button>
@@ -148,7 +147,7 @@ const Feed = () => {
         </form>
 
         {/* Sort Dropdown */}
-        <div className="mb-4 basis-2/12 p-2 ">
+        <div className="flex-shrink-0">
           <SortDropdown onSortChange={handleSortChange} />
         </div>
       </div>

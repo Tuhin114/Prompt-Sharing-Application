@@ -1,52 +1,51 @@
-import Image from "@node_modules/next/image";
 import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@src/components/ui/select";
 
 const Sortdown = ({ onSortChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Default");
 
+  // Sorting options
   const options = [
-    { label: "Default", value: "" },
+    { label: "Default", value: "default" },
     { label: "Most Liked", value: "likes" },
     { label: "Most Saved", value: "bookmarks" },
   ];
 
+  // Handle sorting change
   const handleOptionClick = (option) => {
     setSelectedOption(option.label);
-    setIsOpen(false);
     onSortChange({ target: { value: option.value } });
   };
 
   return (
-    <div className="relative inline-block text-left basis-2/12 shadow-lg">
-      {/* Dropdown Toggle */}
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between p-2 border rounded-md cursor-pointer bg-white"
-      >
-        <Image
-          src="/assets/icons/dropdown.svg"
-          alt="dropdown"
-          width={32}
-          height={32}
-          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-        />
-      </div>
-
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <ul className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
-          {options.map((option) => (
-            <li
-              key={option.value}
-              onClick={() => handleOptionClick(option)}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {option.label}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="w-32">
+      <Select onValueChange={setSelectedOption} defaultValue="default">
+        <SelectTrigger className="w-full px-4 py-3 h-12 rounded-lg bg-white/70 backdrop-blur-lg shadow-md border border-gray-300 text-gray-600 ">
+          <SelectValue placeholder="Default" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sort By</SelectLabel>
+            {options.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                onClick={() => handleOptionClick(option)}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   );
 };
