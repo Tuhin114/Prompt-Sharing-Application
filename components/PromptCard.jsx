@@ -108,11 +108,11 @@ const PromptCard = ({
   };
 
   return (
-    <div className="prompt_card">
+    <div className="prompt_card flex flex-col">
       {/* User Info */}
-      <div className="flex justify-between items-start gap-5">
+      <div className="flex justify-between items-start gap-5 p-2">
         <div
-          className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer"
           onClick={handleProfileClick}
         >
           <Image
@@ -123,15 +123,12 @@ const PromptCard = ({
             className="rounded-full object-contain"
           />
           <div className="flex flex-col">
-            <h3 className="font-satoshi font-semibold text-gray-900">
+            <h3 className="font-semibold text-gray-900 text-sm line-clamp-1">
               {post.creator.username}
             </h3>
-            <p className="font-inter text-sm text-gray-500">
-              {post.creator.email}
-            </p>
+            <p className="text-xs text-gray-500">{post.creator.email}</p>
           </div>
         </div>
-        {/* Copy Button */}
         {post.prompt !== "" && (
           <div className="copy_btn" onClick={handleCopy}>
             <Image
@@ -148,64 +145,90 @@ const PromptCard = ({
         )}
       </div>
 
-      {/* Prompt Content */}
-      <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+      <div className="flex-grow p-2 px-2">
+        {/* Title */}
+        <h3 className="font-semibold text-lg mt-2 my-1 line-clamp-2">
+          {post.title ||
+            "What strategies are effective for migrating JavaScript to TypeScript?"}
+        </h3>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-2">
-        {post.tag.map((eachTag, index) => (
-          <p
-            key={index}
-            className="inline-block cursor-pointer px-2 py-1 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white"
-            onClick={() => handleTagClick && handleTagClick(eachTag)}
-          >
-            #{eachTag}
-          </p>
-        ))}
+        {/* Prompt Content */}
+        <p className="text-sm text-gray-800 my-3 line-clamp-3">
+          {post.prompt.length > 140
+            ? `${post.prompt.slice(0, 140)}...`
+            : post.prompt}
+          {post.prompt.length > 140 && (
+            <span className="text-gray-500 text-sm mt-1 cursor-pointer hover:underline hover:text-blue-500">
+              more
+            </span>
+          )}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 my-2">
+          {post.tag.map((eachTag, index) => (
+            <p
+              key={index}
+              className="px-4 py-2 text-xs bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white cursor-pointer"
+              onClick={() => handleTagClick && handleTagClick(eachTag)}
+            >
+              #{eachTag}
+            </p>
+          ))}
+        </div>
       </div>
 
       {/* Actions */}
-      {isLike && isSave && (
-        <div className="flex justify-between items-center gap-2 mt-5">
-          <div className="flex-center gap-2" onClick={handleLikeOrUnlike}>
-            <Image
-              src={
-                isLiked
-                  ? "/assets/icons/heart-fill.svg"
-                  : "/assets/icons/heart.svg"
-              }
-              alt="heart"
-              width={17}
-              height={17}
-            />
-            <span>{totalLikes}</span>
-          </div>
+      <div className="h-[50px] flex items-end px-2">
+        {isLike && isSave && (
+          <div className="flex justify-between w-full mt-auto">
+            {/* Like Section */}
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={handleLikeOrUnlike}
+            >
+              <div className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded-full">
+                <Image
+                  src={
+                    isLiked
+                      ? "/assets/icons/heart-fill.svg"
+                      : "/assets/icons/heart.svg"
+                  }
+                  alt="heart"
+                  width={17}
+                  height={17}
+                />
+              </div>
+              <span className="text-sm">{totalLikes}</span>
+            </div>
 
-          <div
-            className="flex-center gap-1"
-            onClick={handleBookmarkOrUnbookmark}
-          >
-            <Image
-              src={
-                isBookmarked
-                  ? "/assets/icons/bookmarked.svg"
-                  : "/assets/icons/bookmark.svg"
-              }
-              alt="bookmark"
-              width={21}
-              height={21}
-            />
-            <span>{totalBookmarks}</span>
+            {/* Bookmark Section */}
+            <div
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={handleBookmarkOrUnbookmark}
+            >
+              <Image
+                src={
+                  isBookmarked
+                    ? "/assets/icons/bookmarked.svg"
+                    : "/assets/icons/bookmark.svg"
+                }
+                alt="bookmark"
+                width={21}
+                height={21}
+              />
+              <span className="text-sm">{totalBookmarks}</span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Edit and Delete and View Actions */}
+      {/* Edit/Delete/View Actions */}
       {session?.user?.id === post.creator._id && pathName === "/profile" && (
-        <div className="flex-center gap-4 border-t border-gray-100 pt-3">
+        <div className="flex justify-between border-t border-gray-100 pt-3 mt-2">
           {isEdit && (
             <p
-              className="font-inter text-sm green_gradient cursor-pointer"
+              className="text-sm text-green-500 cursor-pointer"
               onClick={handleEdit}
             >
               Edit
@@ -213,7 +236,7 @@ const PromptCard = ({
           )}
           {isView && (
             <p
-              className="font-inter text-sm green_gradient  cursor-pointer"
+              className="text-sm text-blue-500 cursor-pointer"
               onClick={handleView}
             >
               View
@@ -221,7 +244,7 @@ const PromptCard = ({
           )}
           {isDelete && (
             <p
-              className="font-inter text-sm orange_gradient cursor-pointer"
+              className="text-sm text-orange-500 cursor-pointer"
               onClick={handleDelete}
             >
               Delete

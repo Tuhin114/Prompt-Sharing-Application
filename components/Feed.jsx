@@ -5,6 +5,50 @@ import PromptCard from "./PromptCard";
 import SortDropdown from "./Sortdown";
 import TrendingTags from "./TrendingTags";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../src/components/ui/card";
+import { Heart, Bookmark } from "lucide-react";
+
+const prompts = [
+  {
+    id: 1,
+    user: "tuhinpoddar",
+    email: "tuhinpoddar111@gmail.com",
+    title: "Common TypeScript Design Patterns",
+    content:
+      "What are the common TypeScript design patterns and how can they be applied to build robust applications in PC.",
+    tags: ["#full-stack"],
+    likes: 1,
+    bookmarks: 2,
+  },
+  {
+    id: 2,
+    user: "tuhinpoddar",
+    email: "tuhinpoddar111@gmail.com",
+    title: "Excel as Text-Based",
+    content:
+      "I want you to act as a text-based excel. You'll only reply with the text-based 10 rows excel sheet.",
+    tags: ["#excel"],
+    likes: 2,
+    bookmarks: 1,
+  },
+  {
+    id: 3,
+    user: "tuhinpoddar",
+    email: "tuhinpoddar111@gmail.com",
+    title: "Migrating JavaScript to TypeScript",
+    content:
+      "What strategies are effective for migrating JavaScript to TypeScript?",
+    tags: ["#typescript", "#full-stack", "#development"],
+    likes: 2,
+    bookmarks: 1,
+  },
+];
+
 const PromptCardList = ({ data, handleTagClick }) => {
   const isLike = true;
   const isSave = true;
@@ -20,6 +64,45 @@ const PromptCardList = ({ data, handleTagClick }) => {
         />
       ))}
     </div>
+    // <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    //   {prompts.map((prompt) => (
+    //     <Card key={prompt.id} className="shadow-md border border-gray-200">
+    //       <CardHeader>
+    //         <CardTitle className="text-lg">{prompt.title}</CardTitle>
+    //       </CardHeader>
+    //       <CardContent>
+    //         <p className="text-gray-700 line-clamp-3">
+    //           {prompt.content.length > 150
+    //             ? `${prompt.content.slice(0, 150)}...`
+    //             : prompt.content}
+    //         </p>
+    //         {prompt.content.length > 150 && (
+    //           <button className="text-blue-500 mt-2">Read More</button>
+    //         )}
+    //         <div className="flex flex-wrap gap-2 mt-2">
+    //           {prompt.tags.map((tag, index) => (
+    //             <span
+    //               key={index}
+    //               className="bg-blue-500 text-white px-3 py-1 text-sm rounded-full"
+    //             >
+    //               {tag}
+    //             </span>
+    //           ))}
+    //         </div>
+    //         <div className="flex justify-between items-center mt-4 text-gray-500">
+    //           <div className="flex items-center space-x-2">
+    //             <Heart className="w-5 h-5" />
+    //             <span>{prompt.likes}</span>
+    //           </div>
+    //           <div className="flex items-center space-x-2">
+    //             <Bookmark className="w-5 h-5" />
+    //             <span>{prompt.bookmarks}</span>
+    //           </div>
+    //         </div>
+    //       </CardContent>
+    //     </Card>
+    //   ))}
+    // </div>
   );
 };
 
