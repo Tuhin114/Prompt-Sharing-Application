@@ -11,6 +11,7 @@ import {
 
 const Sortdown = ({ onSortChange }) => {
   const [selectedOption, setSelectedOption] = useState("Default");
+  console.log(onSortChange);
 
   // Sorting options
   const options = [
