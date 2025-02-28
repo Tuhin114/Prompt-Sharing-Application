@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const useSearch = (allPosts) => {
   const [searchText, setSearchText] = useState("");
   const [filteredPosts, setFilteredPosts] = useState(allPosts);
 
+  useEffect(() => {
+    setFilteredPosts(allPosts);
+  }, [allPosts]);
+
+  // Function to filter posts based on a query string.
   const filterPrompts = (query) => {
+    if (!query) return allPosts;
+
     const regex = new RegExp(query, "i");
     return allPosts.filter(
       (post) =>
@@ -14,8 +21,10 @@ const useSearch = (allPosts) => {
     );
   };
 
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
+  // Accepts either an event or a plain string.
+  const handleSearchChange = (eOrQuery) => {
+    let query =
+      typeof eOrQuery === "string" ? eOrQuery : eOrQuery?.target?.value || "";
     setSearchText(query);
     setFilteredPosts(filterPrompts(query));
   };

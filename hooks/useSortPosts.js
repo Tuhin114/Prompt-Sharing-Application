@@ -1,27 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const useSortPosts = (allPosts) => {
-  console.log(allPosts);
-  const [sortedPosts, setSortedPosts] = useState(allPosts);
+  const [sortedPosts, setSortedPosts] = useState([]);
+  const [sortType, setSortType] = useState("default");
 
-  const fetchSortedPosts = async (sortType) => {
-    try {
-      const response = await fetch(`/api/prompt/sort/${sortType}`);
+  useEffect(() => {
+    let sortedData = [...allPosts];
 
-      if (!response.ok) throw new Error("Failed to fetch sorted posts");
-      const sortedData = await response.json();
-      setSortedPosts(sortedData);
-    } catch (error) {
-      console.error(error.message);
+    if (sortType === "likes") {
+      sortedData.sort(
+        (a, b) => (b.likes?.length || 0) - (a.likes?.length || 0)
+      ); // Sort by like count
+    } else if (sortType === "bookmarks") {
+      sortedData.sort(
+        (a, b) => (b.saved?.length || 0) - (a.saved?.length || 0)
+      ); // Sort by bookmark count
     }
-  };
+
+    setSortedPosts(sortedData);
+  }, [sortType, allPosts]);
 
   const handleSortChange = (selectedSort) => {
-    if (selectedSort === "likes" || selectedSort === "bookmarks") {
-      fetchSortedPosts(selectedSort);
-    } else {
-      setSortedPosts(allPosts);
-    }
+    setSortType(selectedSort);
   };
 
   return { sortedPosts, handleSortChange };

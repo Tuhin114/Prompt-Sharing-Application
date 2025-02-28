@@ -34,38 +34,27 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  // Fetch all posts
   const { allPosts, loading } = useFetchPosts();
-  console.log(allPosts);
-
-  // Search Hook (Filters Posts)
   const { searchText, filteredPosts, handleSearchChange, handleClearSearch } =
     useSearch(allPosts);
+  const { sortedPosts, handleSortChange } = useSortPosts(filteredPosts);
 
-  // Sort Hook (Sorts Posts after Filtering)
-  const { sortedPosts, handleSortChange } = useSortPosts(allPosts);
-  console.log(sortedPosts);
-
-  // State for managing displayed posts
   const [posts, setPosts] = useState([]);
 
-  // Sync `posts` with `allPosts` on fetch complete and apply sorting
   useEffect(() => {
     if (allPosts.length > 0) {
-      setPosts(allPosts); // Set posts when data is fetched
+      setPosts(allPosts);
     }
   }, [allPosts]);
 
-  // Sync `posts` when sortedPosts updates (fixes the first-time issue)
   useEffect(() => {
     if (sortedPosts.length > 0) {
       setPosts(sortedPosts);
     }
   }, [sortedPosts]);
 
-  // Handle sorting change
   const handleSort = (sortType) => {
-    handleSortChange(sortType); // Updates sortedPosts internally
+    handleSortChange(sortType);
   };
 
   return (
