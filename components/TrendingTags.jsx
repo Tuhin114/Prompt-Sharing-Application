@@ -1,57 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
+import useTrendingTags from "@/hooks/useTrendingTags";
 
 const TrendingTags = ({ handleTrendingTagClick }) => {
-  const [trendingTags, setTrendingTags] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTrendingTags = async () => {
-      try {
-        const response = await fetch("/api/tags/trending");
-        const data = await response.json();
-
-        const formattedTags = data.map((tag) => ({
-          name: tag._id,
-          count: tag.count,
-          trend: "up",
-        }));
-
-        setTrendingTags(formattedTags);
-      } catch (error) {
-        console.error("Failed to fetch trending tags:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTrendingTags();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="w-full max-w-6xl mx-auto my-4 bg-white shadow-lg rounded-lg p-6">
-        <div className="flex flex-row items-center gap-2 text-xl font-semibold text-gray-800">
-          <TrendingUp className="w-5 h-5 text-orange-500" />
-          <h2>Trending Tags</h2>
-        </div>
-        <div className="mt-4">
-          <p className="text-gray-500">Loading trending tags...</p>
-        </div>
-      </div>
-    );
-  }
+  const { trendingTags, loading, error } = useTrendingTags();
 
   return (
     <div className="my-8 p-6 w-full rounded-lg border border-gray-300 bg-white/20 bg-clip-padding backdrop-blur-lg backdrop-filter">
+      {/* Header */}
       <div className="flex flex-row items-center gap-2 text-xl font-semibold text-gray-800">
         <TrendingUp className="w-5 h-5 text-orange-500" />
         <h2>Trending Tags</h2>
       </div>
-      <div className="mt-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+
+      {/* Loading State */}
+      {loading && (
+        <div className="text-gray-500 mt-4">Loading trending tags...</div>
+      )}
+
+      {/* Error State */}
+      {error && <div className="text-red-500 mt-4">{error}</div>}
+
+      {/* Tags Grid */}
+      {!loading && !error && trendingTags.length > 0 && (
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           {trendingTags.map((tag) => (
             <button
               key={tag.name}
@@ -74,7 +47,12 @@ const TrendingTags = ({ handleTrendingTagClick }) => {
             </button>
           ))}
         </div>
-      </div>
+      )}
+
+      {/* No Tags Message */}
+      {!loading && !error && trendingTags.length === 0 && (
+        <div className="text-gray-500 mt-4">No trending tags available.</div>
+      )}
     </div>
   );
 };

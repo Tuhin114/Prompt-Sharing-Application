@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
+import useLike from "../hooks/useLike";
+import useBookmark from "../hooks/useBookmark";
 
 const PromptCard = ({
   post,
@@ -21,77 +23,11 @@ const PromptCard = ({
   const pathName = usePathname();
   const router = useRouter();
 
-  const isAlreadyLiked = post.likes.includes(session?.user?.id);
-  const initialTotalLikes = post.likes.length;
-  const isAlreadyBookmarked = post.saved.includes(session?.user?.id);
-  const initialTotalBookmarks = post.saved.length;
+  const { isLiked, totalLikes, handleLikeOrUnlike } = useLike(post, session);
+  const { isBookmarked, totalBookmarks, handleBookmarkOrUnbookmark } =
+    useBookmark(post, session);
 
   const [copied, setCopied] = useState("");
-  const [isLiked, setIsLiked] = useState(isAlreadyLiked);
-  const [isBookmarked, setIsBookmarked] = useState(isAlreadyBookmarked);
-  const [totalLikes, setTotalLikes] = useState(initialTotalLikes);
-  const [totalBookmarks, setTotalBookmarks] = useState(initialTotalBookmarks);
-
-  const handleLikeOrUnlike = async (e) => {
-    e.preventDefault();
-    if (!session?.user?.id) return;
-
-    try {
-      const response = await fetch(isLiked ? "/api/unlike" : "/api/like", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          promptId: post._id,
-          userId: session.user.id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to ${isLiked ? "unlike" : "like"} the post`);
-      }
-
-      setIsLiked(!isLiked);
-      setTotalLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
-    } catch (error) {
-      console.error(`Error: ${error.message}`);
-    }
-  };
-
-  const handleBookmarkOrUnbookmark = async (e) => {
-    e.preventDefault();
-    if (!session?.user?.id) return;
-
-    try {
-      const response = await fetch(
-        isBookmarked ? "/api/unbookmark" : "/api/bookmark",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            promptId: post._id,
-            userId: session.user.id,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to ${isBookmarked ? "unbookmark" : "bookmark"} the post`
-        );
-      }
-
-      setIsBookmarked(!isBookmarked);
-      setTotalBookmarks((prevBookmarks) =>
-        isBookmarked ? prevBookmarks - 1 : prevBookmarks + 1
-      );
-    } catch (error) {
-      console.error(`Error: ${error.message}`);
-    }
-  };
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user?.id) {

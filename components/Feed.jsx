@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
-// import SortDropdown from "./Sortdown";
 import TrendingTags from "./TrendingTags";
 
 import {
@@ -14,18 +13,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@src/components/ui/select";
+import useFetchPosts from "@hooks/useFetchPosts";
+import useSearch from "@hooks/useSearch";
+import useSortPosts from "@hooks/useSortPosts";
 
 const PromptCardList = ({ data, handleTagClick }) => {
-  const isLike = true;
-  const isSave = true;
   return (
     <div className="mt-8 prompt_layout">
       {data.map((post) => (
         <PromptCard
           key={post._id}
           post={post}
-          isLike={isLike}
-          isSave={isSave}
+          isLike={true}
+          isSave={true}
           handleTagClick={handleTagClick}
         />
       ))}
@@ -34,110 +34,44 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [sortBy, setSortBy] = useState("");
-  const [loading, setLoading] = useState(false);
+  // Fetch all posts
+  const { allPosts, loading } = useFetchPosts();
+  console.log(allPosts);
 
-  const [originalPosts, setOriginalPosts] = useState([]);
+  // Search Hook (Filters Posts)
+  const { searchText, filteredPosts, handleSearchChange, handleClearSearch } =
+    useSearch(allPosts);
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
-      setAllPosts(data);
-      setOriginalPosts(data);
-      setFilteredPosts(data);
-    } catch (error) {
-      console.error("Failed to fetch posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Sort Hook (Sorts Posts after Filtering)
+  const { sortedPosts, handleSortChange } = useSortPosts(allPosts);
+  console.log(sortedPosts);
 
-  const fetchSortedPosts = async (sortType) => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `/api/prompt/sort/${sortType === "likes" ? "likes" : "bookmarks"}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch sorted posts");
-      }
-      const sortedPosts = await response.json();
-      console.log(sortedPosts);
-      setFilteredPosts(sortedPosts);
-    } catch (error) {
-      console.error(`Failed to fetch sorted posts: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // State for managing displayed posts
+  const [posts, setPosts] = useState([]);
 
+  // Sync `posts` with `allPosts` on fetch complete and apply sorting
   useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i");
-    return allPosts.filter(
-      (item) =>
-        regex.test(item.creator.username) ||
-        regex.test(item.tag) ||
-        regex.test(item.prompt)
-    );
-  };
-
-  const handleSearchChange = (e) => {
-    clearTimeout(searchTimeout);
-    setSearchText(e.target.value);
-
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterPrompts(e.target.value);
-        setFilteredPosts(searchResult);
-      }, 500)
-    );
-  };
-
-  const handleClearSearch = () => {
-    clearTimeout(searchTimeout);
-    setSearchText("");
-    setFilteredPosts(allPosts);
-  };
-
-  const handleTagClick = (tagName) => {
-    setSearchText(tagName);
-    const searchResult = filterPrompts(tagName);
-    setFilteredPosts(searchResult);
-  };
-
-  const filterTrendingTags = (searchtext) => {
-    setSearchText(searchtext);
-    const regex = new RegExp(searchtext, "i");
-    return allPosts.filter((item) => regex.test(item.tag));
-  };
-
-  const handleTrendingTagClick = (tagName) => {
-    const searchResult = filterTrendingTags(tagName);
-    setFilteredPosts(searchResult);
-  };
-
-  const handleSortChange = (selectedSort) => {
-    setSortBy(selectedSort);
-    if (selectedSort === "likes" || selectedSort === "bookmarks") {
-      fetchSortedPosts(selectedSort);
-    } else {
-      setFilteredPosts(originalPosts);
+    if (allPosts.length > 0) {
+      setPosts(allPosts); // Set posts when data is fetched
     }
+  }, [allPosts]);
+
+  // Sync `posts` when sortedPosts updates (fixes the first-time issue)
+  useEffect(() => {
+    if (sortedPosts.length > 0) {
+      setPosts(sortedPosts);
+    }
+  }, [sortedPosts]);
+
+  // Handle sorting change
+  const handleSort = (sortType) => {
+    handleSortChange(sortType); // Updates sortedPosts internally
   };
 
   return (
     <section className="feed">
       <div className="w-full flex items-center justify-center gap-2 px-36">
+        {/* Search Input */}
         <form className="relative flex-1">
           <input
             type="text"
@@ -151,7 +85,7 @@ const Feed = () => {
             <button
               type="button"
               onClick={handleClearSearch}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               ✖️
             </button>
@@ -160,16 +94,18 @@ const Feed = () => {
 
         {/* Sort Dropdown */}
         <div className="flex-shrink-0">
-          <SortDropdown onSortChange={handleSortChange} />
+          <SortDropdown onSortChange={handleSort} />
         </div>
       </div>
 
-      <TrendingTags handleTrendingTagClick={handleTrendingTagClick} />
+      {/* Trending Tags */}
+      <TrendingTags handleTrendingTagClick={handleSearchChange} />
 
+      {/* Show Loading or Sorted Posts */}
       {loading ? (
         <div className="text-center mt-8">Loading...</div>
       ) : (
-        <PromptCardList data={filteredPosts} handleTagClick={handleTagClick} />
+        <PromptCardList data={posts} handleTagClick={handleSearchChange} />
       )}
     </section>
   );
@@ -177,6 +113,7 @@ const Feed = () => {
 
 export default Feed;
 
+/* Sort Dropdown Component */
 const SortDropdown = ({ onSortChange }) => {
   return (
     <div className="w-32">
