@@ -19,7 +19,7 @@ import useSortPosts from "@hooks/useSortPosts";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className="mt-8 prompt_layout">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4 w-full">
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -58,37 +58,39 @@ const Feed = () => {
   };
 
   return (
-    <section className="feed">
-      <div className="w-full flex items-center justify-center gap-2 px-36">
-        {/* Search Input */}
-        <form className="relative flex-1">
-          <input
-            type="text"
-            placeholder="Search for a tag or a username"
-            value={searchText}
-            onChange={handleSearchChange}
-            required
-            className="w-full px-4 py-3 rounded-lg bg-white/70 backdrop-blur-lg shadow-md border border-gray-300"
-          />
-          {searchText && (
-            <button
-              type="button"
-              onClick={handleClearSearch}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            >
-              ✖️
-            </button>
-          )}
-        </form>
+    <section className="w-full px-2">
+      <div className="feed">
+        <div className="w-full flex items-center justify-center gap-2 px-36">
+          {/* Search Input */}
+          <form className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Search for a tag or a username"
+              value={searchText}
+              onChange={handleSearchChange}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-white/70 backdrop-blur-lg shadow-md border border-gray-300"
+            />
+            {searchText && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                ✖️
+              </button>
+            )}
+          </form>
 
-        {/* Sort Dropdown */}
-        <div className="flex-shrink-0">
-          <SortDropdown onSortChange={handleSort} />
+          {/* Sort Dropdown */}
+          <div className="flex-shrink-0">
+            <SortDropdown onSortChange={handleSort} />
+          </div>
         </div>
-      </div>
 
-      {/* Trending Tags */}
-      <TrendingTags handleTrendingTagClick={handleSearchChange} />
+        {/* Trending Tags */}
+        <TrendingTags handleTrendingTagClick={handleSearchChange} />
+      </div>
 
       {/* Show Loading or Sorted Posts */}
       {loading ? (

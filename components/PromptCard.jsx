@@ -6,6 +6,24 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import useLike from "../hooks/useLike";
 import useBookmark from "../hooks/useBookmark";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { MoreVertical } from "lucide-react";
 
 const PromptCard = ({
   post,
@@ -13,11 +31,9 @@ const PromptCard = ({
   handleDelete,
   handleView,
   handleTagClick,
-  isEdit,
-  isDelete,
+  actionType,
   isLike,
   isSave,
-  isView,
 }) => {
   const { data: session } = useSession();
   const pathName = usePathname();
@@ -27,7 +43,8 @@ const PromptCard = ({
   const { isBookmarked, totalBookmarks, handleBookmarkOrUnbookmark } =
     useBookmark(post, session);
 
-  const [copied, setCopied] = useState("");
+  const [open, setOpen] = useState(false);
+  const isOwner = session?.user?.id === post.creator._id;
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user?.id) {
@@ -35,12 +52,6 @@ const PromptCard = ({
     } else {
       router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
     }
-  };
-
-  const handleCopy = () => {
-    setCopied(post.prompt);
-    navigator.clipboard.writeText(post.prompt);
-    setTimeout(() => setCopied(false), 3000);
   };
 
   return (
@@ -65,19 +76,59 @@ const PromptCard = ({
             <p className="text-xs text-gray-500">{post.creator.email}</p>
           </div>
         </div>
-        {post.prompt !== "" && (
-          <div className="copy_btn" onClick={handleCopy}>
-            <Image
-              src={
-                copied === post.prompt
-                  ? "/assets/icons/tick.svg"
-                  : "/assets/icons/copy.svg"
-              }
-              alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
-              width={12}
-              height={12}
-            />
-          </div>
+
+        {isOwner && pathName === "/profile" && actionType === "Saved Posts" && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-2 text-gray-600 hover:text-gray-900">
+                <MoreVertical size={18} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-24">
+              <DropdownMenuItem
+                className="text-green-500"
+                onClick={() => handleEdit(post)}
+              >
+                Edit
+              </DropdownMenuItem>
+              <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
+                    className="text-red-500"
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your post.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel
+                      className="rounded-full px-5 py-1.5 text-sm font-semibold hover:bg-gray-200"
+                      onClick={() => setOpen(false)}
+                    >
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-red-500 hover:bg-red-600 rounded-full px-5 py-1.5 text-sm font-semibold"
+                      onClick={() => {
+                        handleDelete(post);
+                        setOpen(false);
+                      }}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 
@@ -116,7 +167,7 @@ const PromptCard = ({
 
       {/* Actions */}
       <div className="h-[50px] flex items-end px-2">
-        {isLike && isSave && (
+        {actionType !== "My Drafts" && isLike && isSave && (
           <div className="flex justify-between w-full mt-auto">
             {/* Like Section */}
             <div
@@ -157,37 +208,15 @@ const PromptCard = ({
             </div>
           </div>
         )}
+        {actionType === "My Drafts" && (
+          <p
+            className="text-sm text-blue-500 cursor-pointer"
+            onClick={handleView}
+          >
+            View
+          </p>
+        )}
       </div>
-
-      {/* Edit/Delete/View Actions */}
-      {session?.user?.id === post.creator._id && pathName === "/profile" && (
-        <div className="flex justify-between border-t border-gray-100 pt-3 mt-2">
-          {isEdit && (
-            <p
-              className="text-sm text-green-500 cursor-pointer"
-              onClick={handleEdit}
-            >
-              Edit
-            </p>
-          )}
-          {isView && (
-            <p
-              className="text-sm text-blue-500 cursor-pointer"
-              onClick={handleView}
-            >
-              View
-            </p>
-          )}
-          {isDelete && (
-            <p
-              className="text-sm text-orange-500 cursor-pointer"
-              onClick={handleDelete}
-            >
-              Delete
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 };

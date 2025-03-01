@@ -49,17 +49,15 @@ const Profile = ({
       {loading ? (
         <div className="text-center mt-8">Loading...</div>
       ) : (
-        <div className="prompt_layout mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4 w-full">
           {postsData.length > 0 ? (
             postsData.map((post) => (
               <PromptCard
                 key={post._id}
                 post={post}
-                isLike={activeTab !== "My Drafts"}
-                isSave={activeTab !== "My Drafts"}
-                isEdit={activeTab === "My Posts"}
-                isDelete={activeTab !== "Saved Posts"}
-                isView={activeTab === "My Drafts"}
+                actionType={activeTab}
+                isLike={true}
+                isSave={true}
                 handleView={() => handleView?.(post)}
                 handleEdit={() => handleEdit?.(post)}
                 handleDelete={() => handleDelete?.(post)}

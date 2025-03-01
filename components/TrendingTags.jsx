@@ -28,13 +28,13 @@ const TrendingTags = ({ handleTrendingTagClick }) => {
           {trendingTags.map((tag) => (
             <button
               key={tag.name}
-              className="group relative px-5 py-3 bg-gradient-to-r from-orange-200 to-purple-300 hover:from-orange-300 hover:to-purple-400 rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center"
+              className="group relative px-4 py-2 text-xs bg-gradient-to-r from-orange-200 to-purple-300 hover:from-orange-300 hover:to-purple-400 rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center"
               onClick={() => handleTrendingTagClick(tag.name)}
             >
               <span className="text-sm font-medium text-gray-800">
                 #{tag.name}
               </span>
-              <span className="ml-3 text-xs text-gray-500">{tag.count}</span>
+              <span className="ml-2 text-xs text-gray-500">{tag.count}</span>
               <span
                 className={`absolute -top-1 -right-1 w-2 h-2 rounded-full transition-all duration-300 ${
                   tag.trend === "up"
