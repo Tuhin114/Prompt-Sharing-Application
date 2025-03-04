@@ -6,7 +6,6 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import {
   Mail,
   MapPin,
@@ -16,14 +15,15 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
+import { Button } from "./ui/button";
 
 const ProfileDrawer = () => {
   return (
     <Drawer>
       <DrawerTrigger>
-        <button className="bg-black  text-white px-4 py-2 rounded-full font-semibold hover:bg-white hover:text-black transition">
+        <div className="bg-black  text-white px-4 py-2 rounded-full font-semibold hover:bg-white hover:text-black transition">
           Connect
-        </button>
+        </div>
       </DrawerTrigger>
       <DrawerContent className="p-6 mx-48">
         <h2 className="text-xl font-bold">About Me</h2>

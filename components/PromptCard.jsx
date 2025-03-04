@@ -85,18 +85,12 @@ const PromptCard = ({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-24">
-              <DropdownMenuItem
-                className="text-green-500"
-                onClick={() => handleEdit(post)}
-              >
+              <DropdownMenuItem onClick={() => handleEdit(post)}>
                 Edit
               </DropdownMenuItem>
               <AlertDialog open={open} onOpenChange={setOpen}>
                 <AlertDialogTrigger asChild>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className="text-red-500"
-                  >
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                     Delete
                   </DropdownMenuItem>
                 </AlertDialogTrigger>
@@ -134,13 +128,13 @@ const PromptCard = ({
 
       <div className="flex-grow p-2 px-2">
         {/* Title */}
-        <h3 className="font-semibold text-lg mt-2 my-1 line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
           {post.title ||
             "What strategies are effective for migrating JavaScript to TypeScript?"}
         </h3>
 
         {/* Prompt Content */}
-        <p className="text-sm text-gray-800 my-3 line-clamp-3">
+        <p className="text-sm text-gray-700 line-clamp-3">
           {post.prompt.length > 140
             ? `${post.prompt.slice(0, 140)}...`
             : post.prompt}
@@ -152,11 +146,11 @@ const PromptCard = ({
         </p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 my-2">
+        <div className="flex flex-wrap gap-2 mt-2">
           {post.tag.map((eachTag, index) => (
             <p
               key={index}
-              className="px-4 py-2 text-xs bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white cursor-pointer"
+              className="text-xs px-3 py-1 bg-gray-100 rounded-full cursor-pointer hover:bg-gray-200"
               onClick={() => handleTagClick && handleTagClick(eachTag)}
             >
               #{eachTag}
@@ -166,7 +160,7 @@ const PromptCard = ({
       </div>
 
       {/* Actions */}
-      <div className="h-[50px] flex items-end px-2">
+      <div className="flex items-end px-2">
         {actionType !== "My Drafts" && isLike && isSave && (
           <div className="flex justify-between w-full mt-auto">
             {/* Like Section */}

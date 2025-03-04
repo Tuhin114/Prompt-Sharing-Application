@@ -19,7 +19,7 @@ import useSortPosts from "@hooks/useSortPosts";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {data.map((post) => (
         <PromptCard
           key={post._id}
