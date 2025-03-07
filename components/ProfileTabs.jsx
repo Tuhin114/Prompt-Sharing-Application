@@ -1,9 +1,10 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const ProfileTabs = ({ tabConfig, activeTab }) => {
+  console.log(tabConfig, activeTab);
   return (
     <ToggleGroup
-      className="flex gap-2 bg-white mt-8 border-b-[1px] border-gray-300 w-full"
+      className="flex bg-white mt-8 border-b-[1px] border-gray-300 w-full"
       type="single"
     >
       {tabConfig.map(({ label, action }) => (

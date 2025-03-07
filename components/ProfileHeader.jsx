@@ -12,7 +12,7 @@ const ProfileHeader = () => {
   };
 
   return (
-    <div className="relative w-full px-2 bg-white">
+    <div className="relative w-full  bg-white">
       {/* Cover Image */}
       <div className="relative w-full h-40 md:h-52 bg-gray-200 border-b-2 border-gray-300 rounded-t-lg overflow-hidden">
         <Image

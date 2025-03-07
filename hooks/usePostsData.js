@@ -15,6 +15,48 @@ const usePostsData = (initialData, initialLoading) => {
   }, [initialData, activeTab]);
 
   const fetchPosts = async (type) => {
+    const peopleWithAccess = [
+      {
+        name: "Olivia Martin",
+        bio: "B.Tech CS '27 | 3⭐ @GeeksforGeeks(Max : 1689) | 400+ @LeetCode(Max : 1606) | Full-Stack Dev | Next.js | TypeScript | Hack4Bengal 3.0 Runner up",
+        avatar: "/avatars/olivia.png",
+      },
+      {
+        name: "Isabella Nguyen",
+        bio: "Making AI simple for all | IIT Madras",
+        avatar: "/avatars/isabella.png",
+      },
+      {
+        name: "Sofia Davis",
+        bio: "retired from corporate and full time YouTuber, x founder of LCO (acquired), x CTO, Sr. Director at PW. 2 YT channels (950k & 470k)",
+        avatar: "/avatars/sofia.png",
+      },
+      {
+        name: "Sofia Davis",
+        bio: "retired from corporate and full time YouTuber, x founder of LCO (acquired), x CTO, Sr. Director at PW. 2 YT channels (950k & 470k)",
+        avatar: "/avatars/sofia.png",
+      },
+      {
+        name: "Sofia Davis",
+        bio: "retired from corporate and full time YouTuber, x founder of LCO (acquired), x CTO, Sr. Director at PW. 2 YT channels (950k & 470k)",
+        avatar: "/avatars/sofia.png",
+      },
+      {
+        name: "Sofia Davis",
+        bio: "retired from corporate and full time YouTuber, x founder of LCO (acquired), x CTO, Sr. Director at PW. 2 YT channels (950k & 470k)",
+        avatar: "/avatars/sofia.png",
+      },
+      {
+        name: "Sofia Davis",
+        bio: "retired from corporate and full time YouTuber, x founder of LCO (acquired), x CTO, Sr. Director at PW. 2 YT channels (950k & 470k)",
+        avatar: "/avatars/sofia.png",
+      },
+    ];
+
+    if (type == "Following") {
+      setPostsData(peopleWithAccess);
+      setActiveTab("Following");
+    }
     if (activeTab === type) return;
     setLoading(true);
 
@@ -60,6 +102,7 @@ const usePostsData = (initialData, initialLoading) => {
     },
     fetchSavedPosts: () => fetchPosts("Saved Posts"),
     fetchMyDrafts: () => fetchPosts("My Drafts"),
+    fetchFollowing: () => fetchPosts("Following"),
   };
 };
 

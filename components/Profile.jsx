@@ -13,16 +13,45 @@ const Profile = ({
   handleView,
 }) => {
   const { loading, setLoading } = useLoading(initialLoading);
-  const { postsData, activeTab, fetchMyPosts, fetchSavedPosts, fetchMyDrafts } =
-    usePostsData(data, initialLoading);
+  const {
+    postsData,
+    activeTab,
+    fetchMyPosts,
+    fetchSavedPosts,
+    fetchMyDrafts,
+    fetchFollowers,
+    fetchFollowing,
+    fetchTags,
+  } = usePostsData(data, initialLoading);
+
+  const peopleWithAccess = [
+    {
+      name: "Olivia Martin",
+      email: "m@example.com",
+      avatar: "/avatars/olivia.png",
+      permission: "edit",
+    },
+    {
+      name: "Isabella Nguyen",
+      email: "b@example.com",
+      avatar: "/avatars/isabella.png",
+      permission: "view",
+    },
+    {
+      name: "Sofia Davis",
+      email: "p@example.com",
+      avatar: "/avatars/sofia.png",
+      permission: "view",
+    },
+  ];
 
   const tabConfig = [
     { label: "My Posts", action: fetchMyPosts },
     { label: "Saved Posts", action: fetchSavedPosts },
     { label: "My Drafts", action: fetchMyDrafts },
-    { label: "Following", action: fetchMyDrafts },
-    { label: "Followers", action: fetchMyDrafts },
-    { label: "Tags", action: fetchMyDrafts },
+    { label: "Following", action: fetchFollowing },
+    { label: "Followers", action: fetchFollowers },
+    { label: "Tags", action: fetchTags },
   ];
 
   return (
