@@ -17,6 +17,16 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  followers: {
+    type: [Schema.Types.ObjectId],
+    ref: "User",
+    default: [],
+  },
+  following: {
+    type: [Schema.Types.ObjectId],
+    ref: "User",
+    default: [],
+  },
 });
 
 const User = models.User || model("User", UserSchema);
