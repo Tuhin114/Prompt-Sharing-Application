@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import ProfileHeader from "./ProfileHeader";
 import ProfileTabs from "./ProfileTabs";
 import ProfileSidebar from "./ProfileSidebar";
 import ProfileContent from "./ProfileContent";
-import usePostsData from "../hooks/usePostsData";
+import useProfileData from "../hooks/useProfileData";
 import useLoading from "../hooks/useLoading";
 
 const Profile = ({
@@ -12,59 +13,47 @@ const Profile = ({
   handleDelete,
   handleView,
 }) => {
-  const { loading, setLoading } = useLoading(initialLoading);
-  const {
-    postsData,
-    activeTab,
-    fetchMyPosts,
-    fetchSavedPosts,
-    fetchMyDrafts,
-    fetchFollowers,
-    fetchFollowing,
-    fetchTags,
-  } = usePostsData(data, initialLoading);
+  const { loading } = useLoading(initialLoading);
+  // Default activeTab is already "My Posts"
+  const [activeTab, setActiveTab] = useState("My Posts");
+  const { data: profileData, fetchProfileData } = useProfileData(
+    data,
+    initialLoading
+  );
 
-  const peopleWithAccess = [
-    {
-      name: "Olivia Martin",
-      email: "m@example.com",
-      avatar: "/avatars/olivia.png",
-      permission: "edit",
-    },
-    {
-      name: "Isabella Nguyen",
-      email: "b@example.com",
-      avatar: "/avatars/isabella.png",
-      permission: "view",
-    },
-    {
-      name: "Sofia Davis",
-      email: "p@example.com",
-      avatar: "/avatars/sofia.png",
-      permission: "view",
-    },
-  ];
+  useEffect(() => {
+    fetchProfileData("My Posts");
+  }, []);
+
+  // Fetch data on mount and whenever activeTab changes
+  useEffect(() => {
+    fetchProfileData(activeTab);
+  }, [activeTab]);
 
   const tabConfig = [
-    { label: "My Posts", action: fetchMyPosts },
-    { label: "Saved Posts", action: fetchSavedPosts },
-    { label: "My Drafts", action: fetchMyDrafts },
-    { label: "Following", action: fetchFollowing },
-    { label: "Followers", action: fetchFollowers },
-    { label: "Tags", action: fetchTags },
+    "My Posts",
+    "Saved Posts",
+    "My Drafts",
+    "Following",
+    "Followers",
+    "Tags",
   ];
 
   return (
     <section className="w-full">
-      <div className=" bg-white">
+      <div className="bg-white">
         <ProfileHeader />
-        <ProfileTabs tabConfig={tabConfig} activeTab={activeTab} />
+        <ProfileTabs
+          tabConfig={tabConfig}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       </div>
       <div className="flex">
         <ProfileSidebar />
         <ProfileContent
           loading={loading}
-          postsData={postsData}
+          postsData={profileData}
           activeTab={activeTab}
           handleEdit={handleEdit}
           handleDelete={handleDelete}

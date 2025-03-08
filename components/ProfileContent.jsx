@@ -73,7 +73,7 @@ const ProfileContent = ({
               ))}
           </div>
 
-          {isFollow && <FollowerContent postsData={postsData} />}
+          {isFollow ? <FollowContent postsData={postsData} /> : null}
         </div>
       )}
     </div>
@@ -82,38 +82,45 @@ const ProfileContent = ({
 
 export default ProfileContent;
 
-const FollowerContent = ({ postsData }) => {
+const FollowContent = ({ postsData = [] }) => {
   return (
-    <div className="mx-auto p-6 bg-white rounded-lg shadow-md border">
-      {/* People List */}
-      <div className="">
-        <div className="space-y-3">
-          {postsData.map((person, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={person.avatar} alt={person.name} />
-                  <AvatarFallback>{person.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-medium">{person.name}</p>
-                  <p className="text-xs text-gray-500 line-clamp-1">
-                    {person.bio}
-                  </p>
-                </div>
-              </div>
-
-              {/* Permission Dropdown */}
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="w-24">
-                  View
-                </Button>
-                <Button className="w-24">Unfollow</Button>
-              </div>
+    <div>
+      {postsData.length > 0 && (
+        <div className="mx-auto p-6 bg-white rounded-lg shadow-md border">
+          <div className="">
+            <div className="space-y-3">
+              {Array.isArray(postsData) &&
+                postsData.map((person, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={person.image} alt={person.username} />
+                        <AvatarFallback>
+                          {person.username?.charAt(0).toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{person.username}</p>
+                        <p className="text-xs text-gray-500 line-clamp-1">
+                          {person.bio}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" className="w-24">
+                        View
+                      </Button>
+                      <Button className="w-24">Unfollow</Button>
+                    </div>
+                  </div>
+                ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
