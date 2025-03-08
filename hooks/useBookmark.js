@@ -1,13 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const useBookmark = (post, session) => {
-  const isAlreadyBookmarked = post.saved.includes(session?.user?.id);
+  // Validate inputs to prevent errors
+  if (!post || typeof post !== "object" || !post.saved) {
+    console.error("Invalid post object provided to useBookmark hook.");
+    return {
+      isBookmarked: false,
+      totalBookmarks: 0,
+      handleBookmarkOrUnbookmark: () => {},
+    };
+  }
+
+  const userId = session?.user?.id;
+
+  // Check if the user has already bookmarked the post
+  const isAlreadyBookmarked = userId ? post.saved.includes(userId) : false;
+
+  // State for bookmark status and total bookmark count
   const [isBookmarked, setIsBookmarked] = useState(isAlreadyBookmarked);
-  const [totalBookmarks, setTotalBookmarks] = useState(post.saved.length);
+  const [totalBookmarks, setTotalBookmarks] = useState(post.saved.length || 0);
+
+  useEffect(() => {
+    // Update state if post or session changes dynamically
+    setIsBookmarked(isAlreadyBookmarked);
+    setTotalBookmarks(post.saved.length || 0);
+  }, [post, session]);
 
   const handleBookmarkOrUnbookmark = async (e) => {
     e.preventDefault();
-    if (!session?.user?.id) return;
+
+    // Prevent action if user is not authenticated
+    if (!userId) {
+      console.warn("User not authenticated. Cannot bookmark/unbookmark post.");
+      return;
+    }
+
+    // Optimistic UI update (assume success)
+    setIsBookmarked((prev) => !prev);
+    setTotalBookmarks((prevBookmarks) =>
+      isBookmarked ? prevBookmarks - 1 : prevBookmarks + 1
+    );
 
     try {
       const response = await fetch(
@@ -19,7 +51,7 @@ const useBookmark = (post, session) => {
           },
           body: JSON.stringify({
             promptId: post._id,
-            userId: session.user.id,
+            userId,
           }),
         }
       );
@@ -29,13 +61,14 @@ const useBookmark = (post, session) => {
           `Failed to ${isBookmarked ? "unbookmark" : "bookmark"} the post`
         );
       }
-
-      setIsBookmarked(!isBookmarked);
-      setTotalBookmarks((prevBookmarks) =>
-        isBookmarked ? prevBookmarks - 1 : prevBookmarks + 1
-      );
     } catch (error) {
       console.error(`Error: ${error.message}`);
+
+      // Revert UI if API call fails
+      setIsBookmarked((prev) => !prev);
+      setTotalBookmarks((prevBookmarks) =>
+        isBookmarked ? prevBookmarks + 1 : prevBookmarks - 1
+      );
     }
   };
 

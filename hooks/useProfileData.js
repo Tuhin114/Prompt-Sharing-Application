@@ -1,63 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 
-const useProfileData = (initialData = [], initialLoading = true) => {
+const useProfileData = () => {
   const { data: session, status } = useSession();
-  const [data, setData] = useState(initialData);
-  const [loading, setLoading] = useState(initialLoading);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchProfileData = async (type) => {
-    if (!session?.user?.id) return;
-
-    setData([]);
-    setLoading(true);
-
-    let api;
-    switch (type) {
-      case "My Posts":
-        api = `/api/users/${session.user.id}/posts`;
-        break;
-      case "Saved Posts":
-        api = `/api/users/${session.user.id}/saved`;
-        break;
-      case "My Drafts":
-        api = `/api/users/${session.user.id}/drafts`;
-        break;
-      case "Following":
-        api = `/api/users/${session.user.id}/following`;
-        break;
-      case "Followers":
-        api = `/api/users/${session.user.id}/followers`;
-        break;
-      case "Tags":
-        api = `/api/users/${session.user.id}/tags`;
-        break;
-      default:
-        console.error("Invalid API type");
-        setLoading(false);
-        return;
-    }
-
-    try {
-      const response = await fetch(api);
-      if (!response.ok) throw new Error(`Failed to fetch ${type}`);
-
-      const result = await response.json();
-
-      setData(result);
-    } catch (error) {
-      console.error(`Error fetching ${type}:`, error);
-    } finally {
-      setLoading(false);
-    }
+  const apiMap = {
+    "My Posts": `/api/users/${session?.user?.id}/posts`,
+    "Saved Posts": `/api/users/${session?.user?.id}/saved`,
+    "My Drafts": `/api/users/${session?.user?.id}/drafts`,
+    Following: `/api/users/${session?.user?.id}/following`,
+    Followers: `/api/users/${session?.user?.id}/followers`,
+    Tags: `/api/users/${session?.user?.id}/tags`,
   };
 
-  // 🛠 Ensure fetching data only runs when session is ready
+  const fetchProfileData = useCallback(
+    async (type) => {
+      if (!session?.user?.id || !apiMap[type]) return;
+
+      setLoading(true);
+
+      try {
+        const response = await fetch(apiMap[type]);
+        if (!response.ok) throw new Error(`Failed to fetch ${type}`);
+
+        const result = await response.json();
+        setData(Array.isArray(result) ? result : []);
+      } catch (error) {
+        console.error(`Error fetching ${type}:`, error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [session?.user?.id]
+  );
+
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && session?.user?.id) {
       fetchProfileData("My Posts");
     }
-  }, [status]);
+  }, [status, session?.user?.id, fetchProfileData]);
 
   return { data, loading, fetchProfileData };
 };

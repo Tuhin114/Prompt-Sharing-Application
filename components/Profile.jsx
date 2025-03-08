@@ -6,29 +6,17 @@ import ProfileContent from "./ProfileContent";
 import useProfileData from "../hooks/useProfileData";
 import useLoading from "../hooks/useLoading";
 
-const Profile = ({
-  data,
-  loading: initialLoading,
-  handleEdit,
-  handleDelete,
-  handleView,
-}) => {
-  const { loading } = useLoading(initialLoading);
+const Profile = ({ handleEdit, handleDelete, handleView }) => {
   // Default activeTab is already "My Posts"
   const [activeTab, setActiveTab] = useState("My Posts");
-  const { data: profileData, fetchProfileData } = useProfileData(
-    data,
-    initialLoading
-  );
+
+  const { fetchProfileData } = useProfileData();
+
+  console.log(activeTab);
 
   useEffect(() => {
     fetchProfileData("My Posts");
   }, []);
-
-  // Fetch data on mount and whenever activeTab changes
-  useEffect(() => {
-    fetchProfileData(activeTab);
-  }, [activeTab]);
 
   const tabConfig = [
     "My Posts",
@@ -52,8 +40,6 @@ const Profile = ({
       <div className="flex">
         <ProfileSidebar />
         <ProfileContent
-          loading={loading}
-          postsData={profileData}
           activeTab={activeTab}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
