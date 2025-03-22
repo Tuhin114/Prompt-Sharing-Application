@@ -24,6 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { MoreVertical } from "lucide-react";
+import CategoriesDialog from "./Categories/Add To/CategoriesDialog";
 
 const PromptCard = ({
   post,
@@ -77,7 +78,7 @@ const PromptCard = ({
           </div>
         </div>
 
-        {isOwner && pathName === "/profile" && actionType === "Saved Posts" && (
+        {isOwner && pathName === "/profile" && actionType === "My Posts" && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="p-2 text-gray-600 hover:text-gray-900">
@@ -121,6 +122,9 @@ const PromptCard = ({
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <CategoriesDialog post={post} />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}

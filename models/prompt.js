@@ -25,6 +25,11 @@ const PromptSchema = new Schema({
     ref: "User",
     default: [],
   },
+  catagories: {
+    type: [Schema.Types.ObjectId],
+    ref: "Category",
+    default: [],
+  },
 });
 
 const Prompt = models.Prompt || model("Prompt", PromptSchema);

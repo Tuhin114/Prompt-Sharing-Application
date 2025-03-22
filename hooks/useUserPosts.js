@@ -8,8 +8,8 @@ const useUserPosts = (type) => {
 
   const apiMap = {
     "My Posts": `/api/users/${session?.user?.id}/posts`,
-    "Saved Posts": `/api/users/${session?.user?.id}/saved`,
-    "My Drafts": `/api/users/${session?.user?.id}/drafts`,
+    "Saved Items": `/api/users/${session?.user?.id}/saved`,
+    Drafts: `/api/users/${session?.user?.id}/drafts`,
   };
 
   const fetchPosts = useCallback(async () => {
