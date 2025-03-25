@@ -3,6 +3,8 @@ import PromptCard from "@components/PromptCard";
 import useUserPosts from "@hooks/useUserPosts";
 import useCategoryActions from "@hooks/useCategoryActions";
 import NoDataFound from "@components/NoDataFound";
+import Searchbar from "./Searchbar";
+import Filter from "./Filter";
 
 const Posts = ({
   sidebarTab,
@@ -14,28 +16,28 @@ const Posts = ({
   const { data: userPostsData = [], loading: postsLoading } =
     useUserPosts(activeTab);
   const { fetchCategoryPosts } = useCategoryActions();
+
+  const [originalPosts, setOriginalPosts] = useState([]);
   const [postsData, setPostsData] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  console.log("sidebarTab", sidebarTab);
-  console.log("activeTab", activeTab);
 
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
 
     const fetchData = async () => {
-      if (
-        sidebarTab === "all_posts" ||
-        sidebarTab === "all_saved" ||
-        sidebarTab === "all_drafts"
-      ) {
-        setPostsData(userPostsData);
+      let fetchedData = [];
+      if (["all_posts", "all_saved", "all_drafts"].includes(sidebarTab)) {
+        fetchedData = userPostsData;
       } else {
-        const categoryPosts = await fetchCategoryPosts(sidebarTab);
-        if (isMounted) setPostsData(categoryPosts || []);
+        fetchedData = await fetchCategoryPosts(sidebarTab);
       }
-      setLoading(false);
+
+      if (isMounted) {
+        setOriginalPosts(fetchedData || []);
+        setPostsData(fetchedData || []);
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -45,30 +47,47 @@ const Posts = ({
     };
   }, [sidebarTab, activeTab, userPostsData]);
 
-  // console.log("postsData", postsData);
+  console.log(postsData);
 
   return (
     <div>
-      {loading || postsLoading ? (
-        <div>Loading...</div>
-      ) : postsData.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {postsData.map((post) => (
-            <PromptCard
-              key={post._id}
-              post={post}
-              actionType={activeTab}
-              isLike
-              isSave
-              handleView={() => handleView?.(post)}
-              handleEdit={() => handleEdit?.(post)}
-              handleDelete={() => handleDelete?.(post)}
-            />
-          ))}
-        </div>
-      ) : (
-        <NoDataFound actionType={activeTab} />
-      )}
+      <div className="flex justify-between items-center gap-2 mt-4">
+        <Searchbar
+          activeTab={activeTab}
+          sidebarTab={sidebarTab}
+          originalPosts={originalPosts}
+          postsData={postsData}
+          setPostsData={setPostsData}
+        />
+        <Filter
+          activeTab={activeTab}
+          postsData={postsData}
+          setPostsData={setPostsData}
+          sidebarTab={sidebarTab}
+        />
+      </div>
+      <div>
+        {loading || postsLoading ? (
+          <div>Loading...</div>
+        ) : postsData.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            {postsData.map((post) => (
+              <PromptCard
+                key={post._id}
+                post={post}
+                actionType={activeTab}
+                isLike
+                isSave
+                handleView={() => handleView?.(post)}
+                handleEdit={() => handleEdit?.(post)}
+                handleDelete={() => handleDelete?.(post)}
+              />
+            ))}
+          </div>
+        ) : (
+          <NoDataFound actionType={activeTab} />
+        )}
+      </div>
     </div>
   );
 };

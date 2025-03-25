@@ -1,17 +1,8 @@
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectValue,
-} from "@/components/ui/select";
-
 import Posts from "./Posts";
 import Follow from "./Follow";
 import DropDown from "@components/Categories/Category/DropDown";
+import Searchbar from "./Searchbar";
+import Filter from "./Filter";
 
 const Content = ({
   updateCategory,
@@ -46,23 +37,6 @@ const Content = ({
             setSidebarTabName={setSidebarTabName}
           />
         )}
-      </div>
-
-      <div className="flex justify-between items-center gap-2 mt-4">
-        <Input type="text" placeholder="Search" className="w-full bg-white" />
-        <Select>
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Sort By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Filter</SelectLabel>
-              <SelectItem value="recent">Recent</SelectItem>
-              <SelectItem value="liked">Most Liked</SelectItem>
-              <SelectItem value="saved">Most Saved</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Posts Section */}

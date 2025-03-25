@@ -44,8 +44,8 @@ const ProfileSidebar = ({
               className={`px-3 py-2.5 text-sm font-medium cursor-pointer text-center rounded-md transition 
                 ${
                   sidebarTab === item.key_name
-                    ? "bg-gray-300 font-semibold"
-                    : "hover:bg-gray-200"
+                    ? "bg-gray-200 font-semibold"
+                    : "hover:bg-gray-300"
                 }
               `}
               onClick={() => {
