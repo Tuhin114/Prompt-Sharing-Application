@@ -1,6 +1,6 @@
 import NoDataFound from "@components/NoDataFound";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../../../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
 import useFollow from "@hooks/useFollow";
 import useUserConnections from "@hooks/useUserConnections";
 import { useSession } from "@node_modules/next-auth/react";

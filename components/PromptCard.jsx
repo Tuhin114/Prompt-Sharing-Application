@@ -27,6 +27,7 @@ import { MoreVertical } from "lucide-react";
 import CategoriesDialog from "./Categories/Add To/CategoriesDialog";
 
 const PromptCard = ({
+  type,
   post,
   handleEdit,
   handleDelete,
@@ -46,6 +47,8 @@ const PromptCard = ({
 
   const [open, setOpen] = useState(false);
   const isOwner = session?.user?.id === post.creator._id;
+
+  const [opencategoryDialog, setOpenCategoryDialog] = useState(false);
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user?.id) {
@@ -122,9 +125,6 @@ const PromptCard = ({
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <CategoriesDialog post={post} />
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -201,6 +201,16 @@ const PromptCard = ({
                 alt="bookmark"
                 width={21}
                 height={21}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenCategoryDialog(true);
+                }}
+              />
+              <CategoriesDialog
+                type={type}
+                post={post}
+                open={opencategoryDialog}
+                setOpen={setOpenCategoryDialog}
               />
               <span className="text-sm">{totalBookmarks}</span>
             </div>

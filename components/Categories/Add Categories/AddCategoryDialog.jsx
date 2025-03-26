@@ -12,7 +12,7 @@ const CategoriesDialog = ({ addCategory }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="p-4">
+        <Button variant="outline" className="p-4 w-full">
           <PlusCircle className="text-gray-600" />
           Add Categories
         </Button>

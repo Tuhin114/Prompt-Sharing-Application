@@ -7,6 +7,7 @@ import Searchbar from "./Searchbar";
 import Filter from "./Filter";
 
 const Posts = ({
+  type,
   sidebarTab,
   activeTab,
   handleEdit,
@@ -66,13 +67,14 @@ const Posts = ({
           sidebarTab={sidebarTab}
         />
       </div>
-      <div>
+      <div className="">
         {loading || postsLoading ? (
           <div>Loading...</div>
         ) : postsData.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+          <div className="max-h-[calc(100vh-180px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4 pr-2">
             {postsData.map((post) => (
               <PromptCard
+                type={type}
                 key={post._id}
                 post={post}
                 actionType={activeTab}

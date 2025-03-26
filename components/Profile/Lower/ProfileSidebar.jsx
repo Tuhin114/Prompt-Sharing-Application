@@ -1,5 +1,4 @@
-import useCategories from "@hooks/useCategories";
-import AddCategoryDialog from "./Categories/Add Categories/AddCategoryDialog";
+import AddCategoryDialog from "../../Categories/Add Categories/AddCategoryDialog";
 
 const ProfileSidebar = ({
   categories,
@@ -35,7 +34,7 @@ const ProfileSidebar = ({
 
   return (
     <div className="min-w-[220px] border-r-[1px] border-gray-300">
-      <div className="flex flex-col gap-2 p-4">
+      <div className="flex flex-col p-4">
         {/* Show Fixed Sidebar Items */}
         {filteredCategory ? (
           filteredCategory.items.map((item) => (
@@ -44,8 +43,8 @@ const ProfileSidebar = ({
               className={`px-3 py-2.5 text-sm font-medium cursor-pointer text-center rounded-md transition 
                 ${
                   sidebarTab === item.key_name
-                    ? "bg-gray-200 font-semibold"
-                    : "hover:bg-gray-300"
+                    ? "bg-black text-white font-semibold"
+                    : "hover:bg-gray-200"
                 }
               `}
               onClick={() => {
@@ -71,8 +70,8 @@ const ProfileSidebar = ({
               className={`px-3 py-2.5 text-sm font-medium cursor-pointer text-center rounded-md transition
                 ${
                   sidebarTab === category._id
-                    ? "bg-gray-200 font-semibold"
-                    : "hover:bg-gray-300"
+                    ? "bg-black text-white font-semibold"
+                    : "hover:bg-gray-200"
                 }
               `}
               onClick={() => {
@@ -85,8 +84,9 @@ const ProfileSidebar = ({
             </div>
           ))
         )}
-
-        <AddCategoryDialog addCategory={addCategory} />
+        <div className="mt-2">
+          <AddCategoryDialog addCategory={addCategory} />
+        </div>
       </div>
     </div>
   );

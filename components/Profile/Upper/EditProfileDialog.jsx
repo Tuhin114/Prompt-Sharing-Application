@@ -32,9 +32,9 @@ const EditProfileDialog = ({ profile, onSave }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="bg-black text-white px-4 py-2 rounded-full font-semibold hover:bg-white hover:text-black transition">
+        <Button className="rounded-full border border-black bg-black py-1.5 px-5 text-white transition-all hover:bg-white hover:text-black text-center text-sm font-inter flex items-center justify-center">
           Edit
-        </button>
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>

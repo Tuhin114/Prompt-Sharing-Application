@@ -7,6 +7,7 @@ import Filter from "./Filter";
 const Content = ({
   updateCategory,
   deleteCategory,
+  type,
   sidebarTab,
   setSidebarTab,
   sidebarTabName,
@@ -23,7 +24,7 @@ const Content = ({
   const isFollow = ["Following", "Followers"].includes(activeTab);
 
   return (
-    <div className="flex-1 p-4">
+    <div className="flex-1 p-4 ">
       <div className="flex justify-between items-center space-between">
         <h2 className="text-xl font-bold">{sidebarTabName}</h2>
         {!isCategory && (
@@ -42,6 +43,7 @@ const Content = ({
       {/* Posts Section */}
       {isPosts && (
         <Posts
+          type={type}
           sidebarTab={sidebarTab}
           activeTab={activeTab}
           handleEdit={handleEdit}

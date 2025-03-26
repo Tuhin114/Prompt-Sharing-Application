@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ProfileHeader from "./ProfileHeader";
-import ProfileTabs from "./ProfileTabs";
-import ProfileSidebar from "./ProfileSidebar";
+import ProfileHeader from "./Upper/ProfileHeader";
+import ProfileTabs from "./Upper/ProfileTabs";
+import ProfileSidebar from "./Lower/ProfileSidebar";
 import useCategories from "@hooks/useCategories";
-import Content from "./ProfileContent/Content";
+import Content from "./Lower/ProfileContent/Content";
 
 const Profile = ({ handleEdit, handleDelete, handleView }) => {
   const [activeTab, setActiveTab] = useState("My Posts");
@@ -57,7 +57,7 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
   console.log("Categories:", categories);
 
   return (
-    <section className="w-full">
+    <section className="w-full min-h-screen">
       <div className="bg-white">
         <ProfileHeader />
         <ProfileTabs
@@ -79,6 +79,7 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
         <Content
           updateCategory={updateCategory}
           deleteCategory={deleteCategory}
+          type={type}
           setSidebarTabName={setSidebarTabName}
           sidebarTabName={sidebarTabName}
           setSidebarTab={setSidebarTab}
