@@ -1,20 +1,50 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import useCategoryActions from "@/hooks/useCategoryActions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@components/ui/alert-dialog";
+import { Button } from "@components/ui/button";
+import useCategoryActions from "@hooks/useCategoryActions";
+import { useState } from "react";
 
-const CategoryItem = ({ name, isAdded, categoryId, postId }) => {
-  const { addPostToCategory, removePostFromCategory, loading } =
-    useCategoryActions();
-
+const CategoryItem = ({
+  removeBookmark,
+  name,
+  isAdded,
+  categoryId,
+  postId,
+  setOpen,
+}) => {
   const [added, setAdded] = useState(isAdded);
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
+
+  const { useAddPostMutation, useRemovePostMutation } = useCategoryActions();
+
+  // ✅ Use mutations correctly
+  const addMutation = useAddPostMutation();
+  const removeMutation = useRemovePostMutation();
 
   const handleToggle = async () => {
     if (added) {
-      await removePostFromCategory(categoryId, postId);
+      removeMutation.mutate(
+        { categoryId, promptId: postId },
+        {
+          onSuccess: () => setAdded(false),
+        }
+      );
     } else {
-      await addPostToCategory(categoryId, postId);
+      addMutation.mutate(
+        { categoryId, promptId: postId },
+        {
+          onSuccess: () => setAdded(true),
+        }
+      );
     }
-    setAdded(!added);
   };
 
   return (
@@ -23,13 +53,45 @@ const CategoryItem = ({ name, isAdded, categoryId, postId }) => {
         {name}
       </div>
       <Button
-        className="col-span-1"
-        onClick={handleToggle}
-        disabled={loading}
+        className="col-span-1 py-5 text-center font-semibold"
+        onClick={
+          name === "All Saved" ? () => setOpenRemoveDialog(true) : handleToggle
+        }
+        disabled={addMutation.isLoading || removeMutation.isLoading}
         size="sm"
       >
         {added ? "Remove" : "Add"}
       </Button>
+
+      {/* Alert Dialog for removing post */}
+      <AlertDialog open={openRemoveDialog} onOpenChange={setOpenRemoveDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the post from all categories.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="rounded-full px-5 py-1.5 text-sm font-semibold hover:bg-gray-200"
+              onClick={() => setOpenRemoveDialog(false)}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600 rounded-full px-5 py-1.5 text-sm font-semibold"
+              onClick={() => {
+                removeBookmark();
+                setOpen(false);
+                setOpenRemoveDialog(false);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

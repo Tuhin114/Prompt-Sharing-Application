@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useSortPosts = (allPosts) => {
-  console.log(allPosts);
+  // console.log(allPosts);
   const [sortedPosts, setSortedPosts] = useState([]);
   const [sortType, setSortType] = useState("default");
 

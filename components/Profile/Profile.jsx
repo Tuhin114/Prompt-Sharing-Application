@@ -29,7 +29,7 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
     }
   }, [activeTab]);
 
-  console.log("sidebarTab", sidebarTab);
+  // console.log("sidebarTab", sidebarTab);
 
   const tabConfig = [
     "My Posts",
@@ -51,10 +51,12 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
 
   const type = tabTypeMap[activeTab] || "my_posts";
 
+  // console.log("type", type);
+
   const { categories, loading, addCategory, updateCategory, deleteCategory } =
     useCategories(userId, type);
 
-  console.log("Categories:", categories);
+  // console.log("Categories:", categories);
 
   return (
     <section className="w-full min-h-screen">

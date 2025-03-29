@@ -5,7 +5,7 @@ const useCategories = (userId, type) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("Fetching type:", type);
+  // console.log("type:", type);
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -14,15 +14,15 @@ const useCategories = (userId, type) => {
     try {
       const response = await fetch(
         `/api/catagory?user_id=${userId}&type=${type}`
-      ); // ✅ Fixed path
+      );
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to fetch");
 
-      setCategories(data.categories || []); // Always set an array, even if empty
+      setCategories(data.categories || []);
     } catch (error) {
       console.error("Failed to fetch categories:", error.message);
-      setCategories([]); // Set categories to an empty array in case of an error
+      setCategories([]);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ const useCategories = (userId, type) => {
   const updateCategory = async (categoryId, newName) => {
     if (!newName.trim()) return;
 
-    console.log("Updating category:", categoryId, newName);
+    // console.log("Updating category:", categoryId, newName);
 
     try {
       const response = await fetch(`/api/catagory/${categoryId}`, {

@@ -12,7 +12,7 @@ const CategorySchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["my_posts", "saved_posts", "drafts"],
+      enum: ["my_posts", "saved_items", "drafts"],
       default: "my_posts",
     },
     post_id: [

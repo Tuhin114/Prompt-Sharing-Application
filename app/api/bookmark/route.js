@@ -1,9 +1,9 @@
 import Prompt from "@models/prompt";
-import User from "@models/user";
-import Notification from "@models/notification";
+import Category from "@models/category";
 import { connectToDB } from "@utils/database";
 
-export const PATCH = async (request) => {
+// ✅ Bookmark a prompt
+export const POST = async (request) => {
   try {
     const { promptId, userId } = await request.json();
 
@@ -14,50 +14,88 @@ export const PATCH = async (request) => {
     await connectToDB();
 
     const prompt = await Prompt.findById(promptId);
-    if (!prompt) {
-      return new Response("Prompt not found", { status: 404 });
+
+    if (!prompt) return new Response("Prompt not found", { status: 404 });
+
+    // If already bookmarked, return early
+    if (prompt.saved.includes(userId)) {
+      return new Response("Already bookmarked", { status: 200 });
     }
 
-    if (!prompt.saved.includes(userId)) {
-      prompt.saved.push(userId);
-      await prompt.save();
+    // Add userId to prompt.saved and promptId to user.savedPrompts
+    prompt.saved.push(userId);
 
-      const creator = await User.findById(prompt.creator);
-      if (creator) {
-        creator.coins += 2; // Add 2 coins per bookmark
-        await creator.save();
+    await prompt.save();
 
-        console.log(
-          `Coins updated for user ${creator._id}. New balance: ${creator.coins}`
-        );
-
-        // Send notifications
-        const user = await User.findById(userId); // Fetch the user who bookmarked
-
-        if (user) {
-          // 1. Bookmark Notification
-          await Notification.create({
-            recipient: creator._id,
-            senderId: userId,
-            type: "bookmark",
-            message: `${user.username} bookmarked your post.`,
-            promptId,
-            isRead: false,
-          });
-        }
-      }
-
-      return new Response(
-        JSON.stringify({ message: "Bookmarked successfully" }),
-        { status: 200 }
-      );
-    } else {
-      return new Response("User has already bookmarked this prompt", {
-        status: 400,
-      });
-    }
+    return new Response(
+      JSON.stringify({ message: "Bookmarked successfully" }),
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error in bookmark route:", error.message);
-    return new Response("Failed to bookmark the prompt", { status: 500 });
+    console.error("Error bookmarking:", error);
+    return new Response("Failed to bookmark", { status: 500 });
+  }
+};
+
+// ✅ Unbookmark a prompt
+export const DELETE = async (request) => {
+  try {
+    const { promptId, userId } = await request.json();
+
+    if (!promptId || !userId) {
+      return new Response("Missing promptId or userId", { status: 400 });
+    }
+
+    await connectToDB();
+
+    const prompt = await Prompt.findById(promptId);
+    if (!prompt) return new Response("Prompt not found", { status: 404 });
+
+    // If not bookmarked, return early
+    if (!prompt.saved.includes(userId)) {
+      return new Response("Not bookmarked", { status: 200 });
+    }
+
+    const savedCategories = await Category.find({
+      type: "saved_items",
+      post_id: promptId,
+    });
+
+    // Remove userId from prompt.saved
+    prompt.saved = prompt.saved.filter((id) => id.toString() !== userId);
+
+    await prompt.save();
+
+    await Prompt.updateMany(
+      {
+        creator: userId,
+        _id: { $ne: promptId },
+      },
+      {
+        $pull: {
+          catagories: { $in: savedCategories.map((category) => category._id) },
+        },
+      }
+    );
+
+    // Update all matching categories by removing the promptId from post_id array
+    await Category.updateMany(
+      {
+        type: "saved_items",
+        creator: userId,
+        post_id: promptId,
+      },
+      {
+        $pull: { post_id: promptId },
+      }
+    );
+
+    return new Response(
+      JSON.stringify({ message: "Unbookmarked successfully" }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error unbookmarking:", error);
+    return new Response("Failed to unbookmark", { status: 500 });
   }
 };

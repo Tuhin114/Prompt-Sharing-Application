@@ -4,6 +4,13 @@ import { connectToDB } from "@utils/database";
 export const POST = async (req) => {
   let { creator_id, type, name } = await req.json();
 
+  console.log(
+    "Received POST request to create category",
+    creator_id,
+    type,
+    name
+  );
+
   if (!name.trim()) {
     return new Response("Category name is required", { status: 400 });
   }

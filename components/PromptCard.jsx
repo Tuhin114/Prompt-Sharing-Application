@@ -42,7 +42,7 @@ const PromptCard = ({
   const router = useRouter();
 
   const { isLiked, totalLikes, handleLikeOrUnlike } = useLike(post, session);
-  const { isBookmarked, totalBookmarks, handleBookmarkOrUnbookmark } =
+  const { isBookmarked, totalBookmarks, addBookmark, removeBookmark } =
     useBookmark(post, session);
 
   const [open, setOpen] = useState(false);
@@ -50,12 +50,23 @@ const PromptCard = ({
 
   const [opencategoryDialog, setOpenCategoryDialog] = useState(false);
 
+  const isSaveBtn = true;
+
   const handleProfileClick = () => {
     if (post.creator._id === session?.user?.id) {
       router.push("/profile");
     } else {
       router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
     }
+  };
+
+  const handleBookmarkClick = async (e) => {
+    e.preventDefault();
+
+    if (!isBookmarked) {
+      await addBookmark(e);
+    }
+    setOpenCategoryDialog(true);
   };
 
   return (
@@ -125,6 +136,9 @@ const PromptCard = ({
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <CategoriesDialog post={post} type={type} />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -188,10 +202,7 @@ const PromptCard = ({
             </div>
 
             {/* Bookmark Section */}
-            <div
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={handleBookmarkOrUnbookmark}
-            >
+            <div className="flex items-center gap-1 cursor-pointer">
               <Image
                 src={
                   isBookmarked
@@ -201,13 +212,13 @@ const PromptCard = ({
                 alt="bookmark"
                 width={21}
                 height={21}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenCategoryDialog(true);
-                }}
+                onClick={handleBookmarkClick}
               />
               <CategoriesDialog
                 type={type}
+                isBookmarked={isBookmarked}
+                isSaveBtn={isSaveBtn}
+                removeBookmark={removeBookmark}
                 post={post}
                 open={opencategoryDialog}
                 setOpen={setOpenCategoryDialog}

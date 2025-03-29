@@ -15,7 +15,7 @@ const Filter = ({ activeTab, sidebarTab, postsData, setPostsData }) => {
   const { sortedPosts, handleSortChange } = useSortPosts(postsData);
 
   // console.log(sidebarTab);
-  console.log(postsData);
+  // console.log(postsData);
 
   useEffect(() => {
     setSortType("default");

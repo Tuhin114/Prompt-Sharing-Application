@@ -14,44 +14,32 @@ const Posts = ({
   handleDelete,
   handleView,
 }) => {
-  const { data: userPostsData = [], loading: postsLoading } =
+  const { data: userPostsData = [], isLoading: postsLoading } =
     useUserPosts(activeTab);
-  const { fetchCategoryPosts } = useCategoryActions();
-
   const [originalPosts, setOriginalPosts] = useState([]);
   const [postsData, setPostsData] = useState([]);
-  const [loading, setLoading] = useState(false);
 
+  // ✅ React Query for fetching category posts
+  const { fetchCategoryPosts } = useCategoryActions();
+  const { data: categoryPosts, isLoading: categoryLoading } =
+    fetchCategoryPosts(sidebarTab);
+
+  // Fetch initial posts
   useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-
-    const fetchData = async () => {
-      let fetchedData = [];
-      if (["all_posts", "all_saved", "all_drafts"].includes(sidebarTab)) {
-        fetchedData = userPostsData;
-      } else {
-        fetchedData = await fetchCategoryPosts(sidebarTab);
-      }
-
-      if (isMounted) {
-        setOriginalPosts(fetchedData || []);
-        setPostsData(fetchedData || []);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [sidebarTab, activeTab, userPostsData]);
-
-  console.log(postsData);
+    if (
+      sidebarTab === "all_posts" ||
+      sidebarTab === "all_saved" ||
+      sidebarTab === "all_drafts"
+    ) {
+      setPostsData(userPostsData);
+    } else {
+      setPostsData(categoryPosts || []);
+    }
+  }, [sidebarTab, activeTab, userPostsData, categoryPosts]);
 
   return (
     <div>
+      {/* 🔹 Search & Filter Bar */}
       <div className="flex justify-between items-center gap-2 mt-4">
         <Searchbar
           activeTab={activeTab}
@@ -67,8 +55,10 @@ const Posts = ({
           sidebarTab={sidebarTab}
         />
       </div>
-      <div className="">
-        {loading || postsLoading ? (
+
+      {/* 🔹 Posts Grid */}
+      <div>
+        {postsLoading || categoryLoading ? (
           <div>Loading...</div>
         ) : postsData.length > 0 ? (
           <div className="max-h-[calc(100vh-180px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4 pr-2">
@@ -87,7 +77,7 @@ const Posts = ({
             ))}
           </div>
         ) : (
-          <NoDataFound actionType={activeTab} />
+          <NoDataFound />
         )}
       </div>
     </div>

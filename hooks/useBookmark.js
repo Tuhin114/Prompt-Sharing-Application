@@ -7,13 +7,14 @@ const useBookmark = (post, session) => {
     return {
       isBookmarked: false,
       totalBookmarks: 0,
-      handleBookmarkOrUnbookmark: () => {},
+      addBookmark: () => {},
+      removeBookmark: () => {},
     };
   }
 
   const userId = session?.user?.id;
 
-  // Check if the user has already bookmarked the post
+  // Initial bookmark state
   const isAlreadyBookmarked = userId ? post.saved.includes(userId) : false;
 
   // State for bookmark status and total bookmark count
@@ -21,58 +22,79 @@ const useBookmark = (post, session) => {
   const [totalBookmarks, setTotalBookmarks] = useState(post.saved.length || 0);
 
   useEffect(() => {
-    // Update state if post or session changes dynamically
-    setIsBookmarked(isAlreadyBookmarked);
+    // Update state dynamically if post or session changes
+    setIsBookmarked(userId ? post.saved.includes(userId) : false);
     setTotalBookmarks(post.saved.length || 0);
   }, [post, session]);
 
-  const handleBookmarkOrUnbookmark = async (e) => {
+  // ✅ Add Bookmark Function
+  const addBookmark = async (e) => {
     e.preventDefault();
 
-    // Prevent action if user is not authenticated
     if (!userId) {
-      console.warn("User not authenticated. Cannot bookmark/unbookmark post.");
+      console.warn("User not authenticated. Cannot bookmark the post.");
       return;
     }
 
-    // Optimistic UI update (assume success)
-    setIsBookmarked((prev) => !prev);
-    setTotalBookmarks((prevBookmarks) =>
-      isBookmarked ? prevBookmarks - 1 : prevBookmarks + 1
-    );
+    // Optimistic UI update
+    setIsBookmarked(true);
+    setTotalBookmarks((prev) => prev + 1);
 
     try {
-      const response = await fetch(
-        isBookmarked ? "/api/unbookmark" : "/api/bookmark",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            promptId: post._id,
-            userId,
-          }),
-        }
-      );
+      const response = await fetch("/api/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId: post._id, userId }),
+      });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to ${isBookmarked ? "unbookmark" : "bookmark"} the post`
-        );
+        throw new Error("Failed to bookmark the post");
       }
     } catch (error) {
       console.error(`Error: ${error.message}`);
 
       // Revert UI if API call fails
-      setIsBookmarked((prev) => !prev);
-      setTotalBookmarks((prevBookmarks) =>
-        isBookmarked ? prevBookmarks + 1 : prevBookmarks - 1
-      );
+      setIsBookmarked(false);
+      setTotalBookmarks((prev) => prev - 1);
     }
   };
 
-  return { isBookmarked, totalBookmarks, handleBookmarkOrUnbookmark };
+  // ✅ Remove Bookmark Function
+  const removeBookmark = async () => {
+    if (!userId) {
+      console.warn("User not authenticated. Cannot unbookmark the post.");
+      return;
+    }
+
+    // Optimistic UI update
+    setIsBookmarked(false);
+    setTotalBookmarks((prev) => prev - 1);
+
+    try {
+      const response = await fetch("/api/bookmark", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId: post._id, userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to unbookmark the post");
+      }
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+
+      // Revert UI if API call fails
+      setIsBookmarked(true);
+      setTotalBookmarks((prev) => prev + 1);
+    }
+  };
+
+  return {
+    isBookmarked,
+    totalBookmarks,
+    addBookmark,
+    removeBookmark,
+  };
 };
 
 export default useBookmark;
