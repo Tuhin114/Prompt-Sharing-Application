@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/select";
 import useSortPosts from "@hooks/useSortPosts";
 
-const Filter = ({ activeTab, sidebarTab, postsData, setPostsData }) => {
+const Filter = ({
+  activeTab,
+  sidebarTab,
+  postsData,
+  setPostsData,
+  originalPosts,
+}) => {
   const [sortType, setSortType] = useState("default");
   const { sortedPosts, handleSortChange } = useSortPosts(postsData);
 
@@ -19,8 +25,8 @@ const Filter = ({ activeTab, sidebarTab, postsData, setPostsData }) => {
 
   useEffect(() => {
     setSortType("default");
-    handleSortChange("default");
-  }, [sidebarTab, activeTab]);
+    setPostsData(originalPosts);
+  }, [originalPosts]);
 
   useEffect(() => {
     if (JSON.stringify(sortedPosts) !== JSON.stringify(postsData)) {

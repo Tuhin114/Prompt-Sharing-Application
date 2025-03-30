@@ -30,6 +30,7 @@ const useSearch = (allPosts) => {
   };
 
   const handleClearSearch = () => {
+    console.log(allPosts);
     setSearchText("");
     setFilteredPosts(allPosts);
   };

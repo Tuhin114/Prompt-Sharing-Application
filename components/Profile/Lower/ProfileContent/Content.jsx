@@ -1,8 +1,6 @@
 import Posts from "./Posts";
 import Follow from "./Follow";
 import DropDown from "@components/Categories/Category/DropDown";
-import Searchbar from "./Searchbar";
-import Filter from "./Filter";
 
 const Content = ({
   updateCategory,

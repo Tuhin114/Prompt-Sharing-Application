@@ -1,119 +1,131 @@
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useCategories = (userId, type) => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  // console.log("type:", type);
-
-  const fetchCategories = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
+  // ✅ Fetch Categories
+  const {
+    data: categories = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["categories", userId, type],
+    queryFn: async () => {
+      if (!userId || !type) return [];
       const response = await fetch(
         `/api/catagory?user_id=${userId}&type=${type}`
       );
-
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to fetch");
-
-      setCategories(data.categories || []);
-    } catch (error) {
-      console.error("Failed to fetch categories:", error.message);
-      setCategories([]);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (userId && type) fetchCategories();
-  }, [userId, type]);
-
-  const updateCategories = () => {
-    fetchCategories();
-  };
+      if (!response.ok)
+        throw new Error(data.error || "Failed to fetch categories");
+      return data.categories || [];
+    },
+    enabled: !!userId && !!type, // Only fetch if userId & type are available
+  });
 
   // ✅ Add Category
-  const addCategory = async (name) => {
-    if (!name.trim()) return;
-
-    try {
+  const addCategory = useMutation({
+    mutationFn: async (name) => {
+      if (!name.trim()) throw new Error("Category name cannot be empty.");
       const response = await fetch("/api/catagory/new", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ creator_id: userId, type, name }),
       });
-
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to create");
+      if (!response.ok)
+        throw new Error(data.error || "Failed to create category");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["categories", userId, type]); // Refetch categories
+    },
+  });
 
-      fetchCategories();
-    } catch (error) {
-      console.error("Failed to create category:", error.message);
-      setError(error.message);
-    }
-  };
-
-  // ✅ Update Category Name
-  const updateCategory = async (categoryId, newName) => {
-    if (!newName.trim()) return;
-
-    // console.log("Updating category:", categoryId, newName);
-
-    try {
+  // ✅ Update Category
+  const updateCategory = useMutation({
+    mutationFn: async ({ categoryId, newName }) => {
+      console.log(categoryId, newName);
+      if (!newName.trim()) throw new Error("Category name cannot be empty.");
       const response = await fetch(`/api/catagory/${categoryId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ new_name: newName }),
       });
-
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to update");
-
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category._id === categoryId
-            ? { ...category, name: newName }
-            : category
+      console.log(data);
+      if (!response.ok)
+        throw new Error(data.error || "Failed to update category");
+      return { categoryId, newName };
+    },
+    onMutate: async ({ categoryId, newName }) => {
+      // Optimistic update: update UI before API response
+      await queryClient.cancelQueries(["categories", userId, type]);
+      const previousCategories = queryClient.getQueryData([
+        "categories",
+        userId,
+        type,
+      ]);
+      queryClient.setQueryData(["categories", userId, type], (old) =>
+        old.map((cat) =>
+          cat._id === categoryId ? { ...cat, name: newName } : cat
         )
       );
-    } catch (error) {
-      console.error("Failed to update category:", error.message);
-      setError(error.message);
-    }
-  };
+      return { previousCategories };
+    },
+    onError: (_, __, context) => {
+      // Rollback if API fails
+      queryClient.setQueryData(
+        ["categories", userId, type],
+        context.previousCategories
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["categories", userId, type]);
+    },
+  });
 
   // ✅ Delete Category
-  const deleteCategory = async (categoryId) => {
-    try {
+  const deleteCategory = useMutation({
+    mutationFn: async (categoryId) => {
       const response = await fetch(`/api/catagory/${categoryId}`, {
         method: "DELETE",
       });
-
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to delete");
-
-      setCategories((prevCategories) =>
-        prevCategories.filter((category) => category._id !== categoryId)
+      if (!response.ok)
+        throw new Error(data.error || "Failed to delete category");
+      return categoryId;
+    },
+    onMutate: async (categoryId) => {
+      await queryClient.cancelQueries(["categories", userId, type]);
+      const previousCategories = queryClient.getQueryData([
+        "categories",
+        userId,
+        type,
+      ]);
+      queryClient.setQueryData(["categories", userId, type], (old) =>
+        old.filter((cat) => cat._id !== categoryId)
       );
-    } catch (error) {
-      console.error("Failed to delete category:", error.message);
-      setError(error.message);
-    }
-  };
+      return { previousCategories };
+    },
+    onError: (_, __, context) => {
+      queryClient.setQueryData(
+        ["categories", userId, type],
+        context.previousCategories
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["categories", userId, type]);
+    },
+  });
 
   return {
     categories,
     loading,
     error,
-    addCategory,
-    updateCategory,
-    deleteCategory,
-    updateCategories,
+    addCategory: addCategory.mutate,
+    updateCategory: updateCategory.mutate,
+    deleteCategory: deleteCategory.mutate,
   };
 };
 

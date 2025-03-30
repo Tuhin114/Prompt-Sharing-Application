@@ -3,18 +3,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const useCategoryActions = () => {
   const queryClient = useQueryClient();
 
-  // ✅ Fetch posts by category
-  const fetchCategoryPosts = (categoryId) =>
-    useQuery({
-      queryKey: ["categoryPosts", categoryId], // Unique cache key
+  const fetchCategoryPosts = (categoryId) => {
+    return useQuery({
+      queryKey: ["categoryPosts", categoryId],
       queryFn: async () => {
+        if (!categoryId) return [];
         const response = await fetch(`/api/catagory/${categoryId}`);
         if (!response.ok) throw new Error("Failed to fetch category posts");
-        const { posts } = await response.json();
-        return posts;
+        const json = await response.json();
+        return Array.isArray(json.posts) ? json.posts : [];
       },
-      enabled: !!categoryId, // Avoid fetching when categoryId is null
+
+      enabled: !!categoryId,
+      staleTime: 1000 * 60 * 5,
     });
+  };
 
   // ✅ Function to Add Post to Category
   const addPostToCategory = async (categoryId, promptId) => {
@@ -44,7 +47,7 @@ const useCategoryActions = () => {
       mutationFn: ({ categoryId, promptId }) =>
         addPostToCategory(categoryId, promptId),
       onSuccess: (_, { categoryId }) => {
-        queryClient.invalidateQueries(["categoryPosts", categoryId]); // Refresh category posts
+        queryClient.invalidateQueries(["categoryPosts", categoryId]);
       },
     });
 
@@ -54,7 +57,7 @@ const useCategoryActions = () => {
       mutationFn: ({ categoryId, promptId }) =>
         removePostFromCategory(categoryId, promptId),
       onSuccess: (_, { categoryId }) => {
-        queryClient.invalidateQueries(["categoryPosts", categoryId]); // Refresh category posts
+        queryClient.invalidateQueries(["categoryPosts", categoryId]);
       },
     });
 

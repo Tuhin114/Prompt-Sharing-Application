@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DropdownMenuItem } from "@components/ui/dropdown-menu";
+import useCategories from "@hooks/useCategories";
 
 const EditName = ({
   updateCategory,
@@ -22,6 +23,8 @@ const EditName = ({
   const [name, setName] = useState(sidebarTabName);
   const [open, setOpen] = useState(false);
 
+  console.log(sidebarTab, sidebarTabName, name);
+
   // Sync state if sidebarTabName changes
   useEffect(() => {
     setName(sidebarTabName);
@@ -29,7 +32,9 @@ const EditName = ({
 
   const handleSave = async () => {
     if (!name.trim()) return;
-    await updateCategory(sidebarTab, name);
+    const categoryId = sidebarTab;
+    const newName = name;
+    await updateCategory({ categoryId, newName });
     setSidebarTabName(name);
     setOpen(false);
   };

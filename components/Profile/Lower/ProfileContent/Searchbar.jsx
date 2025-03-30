@@ -14,7 +14,7 @@ const Searchbar = ({
 
   useEffect(() => {
     handleClearSearch();
-  }, [sidebarTab, activeTab]);
+  }, [originalPosts]);
 
   useEffect(() => {
     if (postsData !== filteredPosts) {

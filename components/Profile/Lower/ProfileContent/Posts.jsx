@@ -14,32 +14,42 @@ const Posts = ({
   handleDelete,
   handleView,
 }) => {
-  const { data: userPostsData = [], isLoading: postsLoading } =
-    useUserPosts(activeTab);
+  const { data: userPostsData = [], loading: postsLoading } =
+    useUserPosts(sidebarTab);
+
+  // Determine if sidebarTab represents a category or a general view.
+  const isCategory = !["all_posts", "all_saved", "all_drafts"].includes(
+    sidebarTab
+  );
+  // If not a general view, treat sidebarTab as a category id; otherwise, pass null.
+  const categoryId = isCategory ? sidebarTab : null;
+
+  // Always call the hook so the hook order stays consistent.
+  const { fetchCategoryPosts } = useCategoryActions();
+  const { data: categoryPosts = [], isLoading: categoryLoading } =
+    fetchCategoryPosts(categoryId);
+
   const [originalPosts, setOriginalPosts] = useState([]);
   const [postsData, setPostsData] = useState([]);
 
-  // ✅ React Query for fetching category posts
-  const { fetchCategoryPosts } = useCategoryActions();
-  const { data: categoryPosts, isLoading: categoryLoading } =
-    fetchCategoryPosts(sidebarTab);
-
-  // Fetch initial posts
   useEffect(() => {
-    if (
-      sidebarTab === "all_posts" ||
-      sidebarTab === "all_saved" ||
-      sidebarTab === "all_drafts"
-    ) {
-      setPostsData(userPostsData);
-    } else {
-      setPostsData(categoryPosts || []);
+    // Choose the data based on the sidebarTab:
+    const newPosts = ["all_posts", "all_saved", "all_drafts"].includes(
+      sidebarTab
+    )
+      ? userPostsData
+      : categoryPosts;
+    if (JSON.stringify(newPosts) !== JSON.stringify(originalPosts)) {
+      setOriginalPosts(newPosts);
+      setPostsData(newPosts);
     }
-  }, [sidebarTab, activeTab, userPostsData, categoryPosts]);
+  }, [sidebarTab, userPostsData, categoryPosts]);
+
+  // console.log(postsData);
 
   return (
     <div>
-      {/* 🔹 Search & Filter Bar */}
+      {/* Search & Filter Bar */}
       <div className="flex justify-between items-center gap-2 mt-4">
         <Searchbar
           activeTab={activeTab}
@@ -52,11 +62,12 @@ const Posts = ({
           activeTab={activeTab}
           postsData={postsData}
           setPostsData={setPostsData}
+          originalPosts={originalPosts}
           sidebarTab={sidebarTab}
         />
       </div>
 
-      {/* 🔹 Posts Grid */}
+      {/* Posts Grid */}
       <div>
         {postsLoading || categoryLoading ? (
           <div>Loading...</div>

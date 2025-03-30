@@ -9,13 +9,14 @@ import {
   AlertDialogTitle,
 } from "@components/ui/alert-dialog";
 import { Button } from "@components/ui/button";
+import useBookmark from "@hooks/useBookmark";
 import useCategoryActions from "@hooks/useCategoryActions";
 import { useState } from "react";
 
 const CategoryItem = ({
-  removeBookmark,
   name,
   isAdded,
+  removeBookmark,
   categoryId,
   postId,
   setOpen,
@@ -25,7 +26,6 @@ const CategoryItem = ({
 
   const { useAddPostMutation, useRemovePostMutation } = useCategoryActions();
 
-  // ✅ Use mutations correctly
   const addMutation = useAddPostMutation();
   const removeMutation = useRemovePostMutation();
 
@@ -49,11 +49,12 @@ const CategoryItem = ({
 
   return (
     <div className="grid grid-cols-3 items-center gap-2">
-      <div className="col-span-2 text-center font-semibold hover:bg-gray-200 py-2 rounded-lg border-[1px] border-gray-300">
+      <div className="col-span-2 text-center font-semibold hover:bg-gray-100 py-2 rounded-lg border-[1px] border-gray-200">
         {name}
       </div>
       <Button
         className="col-span-1 py-5 text-center font-semibold"
+        variant={added ? "default" : "outline"}
         onClick={
           name === "All Saved" ? () => setOpenRemoveDialog(true) : handleToggle
         }

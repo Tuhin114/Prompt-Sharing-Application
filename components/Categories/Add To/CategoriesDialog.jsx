@@ -23,7 +23,7 @@ const CategoriesDialog = ({
 
   const categoryType = isSaveBtn ? "saved_items" : type;
 
-  console.log(categoryType);
+  // console.log(categoryType);
 
   // Using custom hook
   const { categories, loading, addCategory } = useCategories(
@@ -31,7 +31,7 @@ const CategoriesDialog = ({
     categoryType
   );
 
-  console.log(categories);
+  // console.log(categories);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

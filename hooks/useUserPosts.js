@@ -1,39 +1,39 @@
-import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 
 const useUserPosts = (type) => {
   const { data: session, status } = useSession();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const userId = session?.user?.id;
+
+  const isFetchable = ["all_posts", "all_saved", "all_drafts"].includes(type);
 
   const apiMap = {
-    "My Posts": `/api/users/${session?.user?.id}/posts`,
-    "Saved Items": `/api/users/${session?.user?.id}/saved`,
-    Drafts: `/api/users/${session?.user?.id}/drafts`,
+    all_posts: `/api/users/${userId}/posts`,
+    all_saved: `/api/users/${userId}/saved`,
+    all_drafts: `/api/users/${userId}/drafts`,
   };
 
-  const fetchPosts = useCallback(async () => {
-    if (!session?.user?.id || !apiMap[type]) return;
+  // console.log(apiMap[type]);
 
-    setLoading(true);
-    try {
-      const response = await fetch(apiMap[type]);
-      if (!response.ok) throw new Error(`Failed to fetch ${type}`);
-      const result = await response.json();
-      setData(Array.isArray(result) ? result : []);
-    } catch (error) {
-      console.error(`Error fetching ${type}:`, error);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [session?.user?.id, type]);
+  const fetchPosts = async () => {
+    if (!userId || !apiMap[type]) return [];
+    const response = await fetch(apiMap[type]);
+    // console.log(response);
+    if (!response.ok) throw new Error(`Failed to fetch ${type}`);
+    return response.json();
+  };
 
-  useEffect(() => {
-    if (status === "authenticated" && type) fetchPosts();
-  }, [status, type, fetchPosts]);
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["userPosts", type, session?.user?.id],
+    queryFn: fetchPosts,
+    enabled: status === "authenticated" && !!userId && isFetchable,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
 
-  return { data, loading, refetch: fetchPosts };
+  // console.log(data);
+
+  return { data, loading: isLoading };
 };
 
 export default useUserPosts;
