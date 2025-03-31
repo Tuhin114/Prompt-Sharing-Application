@@ -1,32 +1,8 @@
-import NoDataFound from "@components/NoDataFound";
-import { Button } from "../../../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
-import useFollow from "@hooks/useFollow";
-import useUserConnections from "@hooks/useUserConnections";
-import { useSession } from "@node_modules/next-auth/react";
 import React, { useState } from "react";
-
-const Follow = ({ activeTab }) => {
-  const {
-    data: followData = [],
-    loading: followLoading,
-    refetch: refetchFollow,
-  } = useUserConnections(activeTab);
-
-  return (
-    <div>
-      {followLoading ? (
-        <div>Loading...</div>
-      ) : followData.length > 0 ? (
-        <FollowContent followData={followData} activeTab={activeTab} />
-      ) : (
-        <NoDataFound actionType={activeTab} />
-      )}
-    </div>
-  );
-};
-
-export default Follow;
+import { Button } from "../../../../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../ui/avatar";
+import useFollow from "@hooks/useFollow";
+import { useSession } from "@node_modules/next-auth/react";
 
 const FollowContent = ({ followData, activeTab }) => {
   const { data: session } = useSession();
@@ -58,17 +34,24 @@ const FollowContent = ({ followData, activeTab }) => {
   return (
     <div className="mx-auto mt-4 p-6 bg-white rounded-lg shadow-md border">
       {followData.map((person) => (
-        <div key={person.id} className="flex items-center justify-between">
+        <div
+          key={person.id}
+          className="flex items-center justify-between p-2 border-b border-gray-200"
+        >
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={person.image} alt={person.username} />
+              <AvatarImage src={person.image} alt={person.name} />
               <AvatarFallback>
-                {person.username?.charAt(0).toUpperCase() || "U"}
+                {person.name?.charAt(0).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">{person.username}</p>
+              <div className="flex items-center gap-1">
+                <p className="text-base font-medium">{person.name}</p>
+                <p className="text-xs text-gray-400 mt-1">{person.role}</p>{" "}
+              </div>
               <p className="text-xs text-gray-500 line-clamp-1">{person.bio}</p>
+              {/* Added Role Here */}
             </div>
           </div>
           <div className="flex gap-3">
@@ -92,3 +75,5 @@ const FollowContent = ({ followData, activeTab }) => {
     </div>
   );
 };
+
+export default FollowContent;

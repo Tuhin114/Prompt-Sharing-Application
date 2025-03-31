@@ -1,6 +1,7 @@
 import Posts from "./Posts";
-import Follow from "./Follow";
+import Follow from "./Follow/Follow";
 import DropDown from "@components/Categories/Category/DropDown";
+import Map from "./Follow/Map/Map";
 
 const Content = ({
   updateCategory,
@@ -21,21 +22,26 @@ const Content = ({
   const isPosts = ["My Posts", "Saved Items", "Drafts"].includes(activeTab);
   const isFollow = ["Following", "Followers"].includes(activeTab);
 
+  console.log(activeTab);
+
   return (
     <div className="flex-1 p-4 ">
       <div className="flex justify-between items-center space-between">
         <h2 className="text-xl font-bold">{sidebarTabName}</h2>
-        {!isCategory && (
-          <DropDown
-            updateCategory={updateCategory}
-            deleteCategory={deleteCategory}
-            activeTab={activeTab}
-            sidebarTab={sidebarTab}
-            setSidebarTab={setSidebarTab}
-            sidebarTabName={sidebarTabName}
-            setSidebarTabName={setSidebarTabName}
-          />
-        )}
+        <div className="flex justify-between items-center space-between">
+          {(activeTab === "Following" || activeTab === "Followers") && <Map />}
+          {!isCategory && (
+            <DropDown
+              updateCategory={updateCategory}
+              deleteCategory={deleteCategory}
+              activeTab={activeTab}
+              sidebarTab={sidebarTab}
+              setSidebarTab={setSidebarTab}
+              sidebarTabName={sidebarTabName}
+              setSidebarTabName={setSidebarTabName}
+            />
+          )}
+        </div>
       </div>
 
       {/* Posts Section */}

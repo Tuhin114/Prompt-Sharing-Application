@@ -9,6 +9,7 @@ const nextConfig = {
       "lh3.googleusercontent.com",
       "storyblok-cdn.photoroom.com",
       "cdn.vectorstock.com",
+      "https://randomuser.me/",
     ],
   },
   webpack(config) {

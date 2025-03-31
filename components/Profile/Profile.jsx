@@ -27,6 +27,14 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
       setSidebarTab("all_drafts");
       setSidebarTabName("All Drafts");
     }
+    if (activeTab === "Following") {
+      setSidebarTab("all_following");
+      setSidebarTabName("Following");
+    }
+    if (activeTab === "Followers") {
+      setSidebarTab("all_followers");
+      setSidebarTabName("Followers");
+    }
   }, [activeTab]);
 
   // console.log("sidebarTab", sidebarTab);

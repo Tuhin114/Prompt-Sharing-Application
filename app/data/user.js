@@ -1,0 +1,98 @@
+export const Users = [
+  {
+    id: "1",
+    name: "Alex Johnson",
+    locationName: "New York",
+    location: {
+      lat: 40.7128,
+      lng: -74.006,
+    },
+    image: "https://randomuser.me/api/portraits/men/20.jpg",
+    role: "AI Developer",
+    bio: "Passionate AI developer with expertise in deep learning and NLP. Loves solving real-world problems using AI.",
+  },
+  {
+    id: "2",
+    name: "Sophia Lee",
+    locationName: "San Francisco",
+    location: {
+      lat: 37.7749,
+      lng: -122.4194,
+    },
+    image: "https://randomuser.me/api/portraits/women/45.jpg",
+    role: "Data Scientist",
+    bio: "Data enthusiast who enjoys transforming raw data into actionable insights. Skilled in Python and ML algorithms.",
+  },
+  {
+    id: "3",
+    name: "Michael Chen",
+    locationName: "London",
+    location: {
+      lat: 51.5074,
+      lng: -0.1278,
+    },
+    image: "https://randomuser.me/api/portraits/men/33.jpg",
+    role: "Software Engineer",
+    bio: "Experienced full-stack developer with a strong foundation in JavaScript, TypeScript, and cloud-based solutions.",
+  },
+  {
+    id: "4",
+    name: "Isabella Martínez",
+    locationName: "Madrid",
+    location: {
+      lat: 40.4168,
+      lng: -3.7038,
+    },
+    image: "https://randomuser.me/api/portraits/women/55.jpg",
+    role: "Cybersecurity Expert",
+    bio: "Cybersecurity specialist with a focus on ethical hacking, penetration testing, and secure system design.",
+  },
+  {
+    id: "5",
+    name: "Ethan Williams",
+    locationName: "Toronto",
+    location: {
+      lat: 43.65107,
+      lng: -79.347015,
+    },
+    image: "https://randomuser.me/api/portraits/men/47.jpg",
+    role: "Cloud Engineer",
+    bio: "Cloud computing advocate skilled in AWS, Kubernetes, and DevOps practices. Building scalable infrastructures.",
+  },
+  {
+    id: "6",
+    name: "Mia Gupta",
+    locationName: "New Delhi",
+    location: {
+      lat: 28.6139,
+      lng: 77.209,
+    },
+    image: "https://randomuser.me/api/portraits/women/25.jpg",
+    role: "ML Researcher",
+    bio: "Machine learning researcher exploring cutting-edge AI techniques, from reinforcement learning to GANs.",
+  },
+  {
+    id: "7",
+    name: "William Brown",
+    locationName: "Sydney",
+    location: {
+      lat: -33.8688,
+      lng: 151.2093,
+    },
+    image: "https://randomuser.me/api/portraits/men/41.jpg",
+    role: "Backend Developer",
+    bio: "Expert in designing scalable APIs and database architectures. Loves optimizing performance and security.",
+  },
+  {
+    id: "8",
+    name: "Olivia Davis",
+    locationName: "Berlin",
+    location: {
+      lat: 52.52,
+      lng: 13.405,
+    },
+    image: "https://randomuser.me/api/portraits/women/31.jpg",
+    role: "Product Manager",
+    bio: "Tech-savvy product manager bridging the gap between users and engineering. Passionate about UX and strategy.",
+  },
+];

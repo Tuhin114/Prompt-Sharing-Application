@@ -49,11 +49,11 @@ const CategoryItem = ({
 
   return (
     <div className="grid grid-cols-3 items-center gap-2">
-      <div className="col-span-2 text-center font-semibold hover:bg-gray-100 py-2 rounded-lg border-[1px] border-gray-200">
+      <div className="col-span-2 text-center font-semibold hover:bg-gray-100 py-2 rounded-lg border-[1px] border-gray-400">
         {name}
       </div>
       <Button
-        className="col-span-1 py-5 text-center font-semibold"
+        className="col-span-1 py-5 text-center font-semibold border-[1px] border-gray-400 rounded-lg"
         variant={added ? "default" : "outline"}
         onClick={
           name === "All Saved" ? () => setOpenRemoveDialog(true) : handleToggle
