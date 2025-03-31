@@ -4,14 +4,17 @@ import { MapPin } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog";
 import { Users } from "../../../../../../app/data/user";
-import UserMap from "./UserMap";
 import { Button } from "@components/ui/button";
+import dynamic from "next/dynamic";
+
+const UserMap = dynamic(() => import("./UserMap"), {
+  ssr: false,
+});
 
 const Map = () => {
   return (

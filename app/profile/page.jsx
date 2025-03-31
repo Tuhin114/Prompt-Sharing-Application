@@ -16,10 +16,6 @@ const MyProfile = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       const response = await fetch(`/api/users/${session?.user.id}/posts`);
@@ -59,7 +55,7 @@ const MyProfile = () => {
     }
   };
 
-  return isClient ? (
+  return (
     <Profile
       name="My"
       desc="Welcome to your personalized profile page"
@@ -69,7 +65,7 @@ const MyProfile = () => {
       handleDelete={handleDelete}
       handleView={handleView}
     />
-  ) : null;
+  );
 };
 
 export default MyProfile;
