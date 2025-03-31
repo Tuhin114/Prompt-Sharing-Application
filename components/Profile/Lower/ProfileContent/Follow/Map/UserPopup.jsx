@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { MapPin, X } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";

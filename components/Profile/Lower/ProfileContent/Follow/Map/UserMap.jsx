@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import UserMarker from "./UserMarker";

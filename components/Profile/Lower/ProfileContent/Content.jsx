@@ -1,3 +1,4 @@
+"use client";
 import Posts from "./Posts";
 import Follow from "./Follow/Follow";
 import DropDown from "@components/Categories/Category/DropDown";

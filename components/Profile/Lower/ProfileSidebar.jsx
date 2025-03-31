@@ -25,6 +25,14 @@ const ProfileSidebar = ({
       type: "drafts",
       items: [{ id: "1", name: "All Drafts", key_name: "all_drafts" }],
     },
+    {
+      type: "following",
+      items: [{ id: "1", name: "Following", key_name: "all_following" }],
+    },
+    {
+      type: "followers",
+      items: [{ id: "1", name: "Followers", key_name: "all_followers" }],
+    },
   ];
 
   // Find the category that matches the provided type

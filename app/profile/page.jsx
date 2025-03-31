@@ -13,6 +13,11 @@ const MyProfile = () => {
   const [loading, setLoading] = useState(false);
 
   const [myPosts, setMyPosts] = useState([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -54,18 +59,17 @@ const MyProfile = () => {
     }
   };
 
-  return (
+  return isClient ? (
     <Profile
       name="My"
-      desc="Welcome to your personalized profile page. Share your exceptional prompts and inspire others with the power of your imagination"
+      desc="Welcome to your personalized profile page"
       data={myPosts}
       loading={loading}
-      setLoading={setLoading}
       handleEdit={handleEdit}
-      handleView={handleView}
       handleDelete={handleDelete}
+      handleView={handleView}
     />
-  );
+  ) : null;
 };
 
 export default MyProfile;
