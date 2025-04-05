@@ -1,7 +1,7 @@
 import Provider from "../components/Provider";
 import "../styles/globals.css";
 import Nav from "../components/Nav";
-import "@/utils/cron.js";
+// import "@/utils/cron.js";
 
 export const metadata = {
   title: "Promptopia",
