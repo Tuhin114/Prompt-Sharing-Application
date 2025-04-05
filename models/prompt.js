@@ -15,6 +15,13 @@ const PromptSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
+  publishedAt: {
+    type: Date,
+  },
   likes: {
     type: [Schema.Types.ObjectId],
     ref: "User",

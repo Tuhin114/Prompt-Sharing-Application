@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PromptSuggestions from "./PromptSuggestions";
 import TagSuggestions from "./TagSuggestions";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import ScheduleOptions from "@components/PromptCard/SchedulePost/ScheduleOptions";
+import { Button } from "@components/ui/button";
+import { useSession } from "@node_modules/next-auth/react";
 
 const Form = ({
   type,
@@ -14,6 +18,7 @@ const Form = ({
   handleSaveDraft,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [suggesting, setSuggesting] = useState(false);
   const [tagSuggesting, setTagSuggesting] = useState(false);
@@ -23,10 +28,48 @@ const Form = ({
   const [error, setError] = useState(null);
   const [tagError, setTagError] = useState(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDraftClick = async (e) => {
     e.preventDefault();
     await handleSaveDraft();
+  };
+
+  const handleCreatePrompt = async () => {
+    if (!session?.user.id) return console.error("User is not authenticated.");
+
+    setIsSubmitting(true);
+
+    if (!post.prompt || !post.tag) {
+      alert("Please enter a prompt and tag");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/prompt/new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: post.prompt,
+          userId: session.user.id,
+          tag: post.tag,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create prompt");
+      }
+
+      const data = await response.json();
+      console.log("Prompt created successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error creating prompt:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -91,6 +134,7 @@ const Form = ({
           >
             Cancel
           </button>
+
           {handleSaveDraft && (
             <button
               type="button"
@@ -100,7 +144,20 @@ const Form = ({
               Save as Draft
             </button>
           )}
-          <button
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button className="bg-black hover:bg-gray-800 text-white">
+                Select
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-full sm:w-[400px]">
+              <ScheduleOptions
+                handleCreatePrompt={handleCreatePrompt}
+                post={post}
+              />
+            </SheetContent>
+          </Sheet>
+          {/* <button
             type="submit"
             disabled={submitting || isSubmitDisabled}
             className={`px-5 py-1.5 text-sm rounded-full text-white ${
@@ -110,7 +167,7 @@ const Form = ({
             }`}
           >
             {submitting ? `${type}ing...` : type}
-          </button>
+          </button> */}
         </div>
       </form>
     </div>
