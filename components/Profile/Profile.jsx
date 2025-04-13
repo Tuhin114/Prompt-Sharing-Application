@@ -59,10 +59,16 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
 
   const type = tabTypeMap[activeTab] || "my_posts";
 
-  // console.log("type", type);
+  const tabProps = {
+    activeTab,
+    setActiveTab,
+    sidebarTab,
+    setSidebarTab,
+    sidebarTabName,
+    setSidebarTabName,
+  };
 
-  const { categories, loading, addCategory, updateCategory, deleteCategory } =
-    useCategories(userId, type);
+  // console.log("type", type);
 
   // console.log("Categories:", categories);
 
@@ -78,23 +84,16 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
       </div>
       <div className="flex">
         <ProfileSidebar
-          categories={categories}
-          loading={loading}
-          addCategory={addCategory}
+          userId={userId}
           type={type}
           sidebarTab={sidebarTab}
           setSidebarTab={setSidebarTab}
           setSidebarTabName={setSidebarTabName}
         />
         <Content
-          updateCategory={updateCategory}
-          deleteCategory={deleteCategory}
+          userId={userId}
           type={type}
-          setSidebarTabName={setSidebarTabName}
-          sidebarTabName={sidebarTabName}
-          setSidebarTab={setSidebarTab}
-          activeTab={activeTab}
-          sidebarTab={sidebarTab}
+          tabProps={tabProps}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handleView={handleView}

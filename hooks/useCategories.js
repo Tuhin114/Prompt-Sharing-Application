@@ -13,7 +13,7 @@ const useCategories = (userId, type) => {
     queryFn: async () => {
       if (!userId || !type) return [];
       const response = await fetch(
-        `/api/catagory?user_id=${userId}&type=${type}`
+        `/api/category?user_id=${userId}&type=${type}`
       );
       const data = await response.json();
       if (!response.ok)
@@ -27,7 +27,7 @@ const useCategories = (userId, type) => {
   const addCategory = useMutation({
     mutationFn: async (name) => {
       if (!name.trim()) throw new Error("Category name cannot be empty.");
-      const response = await fetch("/api/catagory/new", {
+      const response = await fetch("/api/category/new", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ creator_id: userId, type, name }),
@@ -47,7 +47,7 @@ const useCategories = (userId, type) => {
     mutationFn: async ({ categoryId, newName }) => {
       console.log(categoryId, newName);
       if (!newName.trim()) throw new Error("Category name cannot be empty.");
-      const response = await fetch(`/api/catagory/${categoryId}`, {
+      const response = await fetch(`/api/category/${categoryId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ new_name: newName }),
@@ -59,7 +59,6 @@ const useCategories = (userId, type) => {
       return { categoryId, newName };
     },
     onMutate: async ({ categoryId, newName }) => {
-      // Optimistic update: update UI before API response
       await queryClient.cancelQueries(["categories", userId, type]);
       const previousCategories = queryClient.getQueryData([
         "categories",
@@ -88,7 +87,7 @@ const useCategories = (userId, type) => {
   // ✅ Delete Category
   const deleteCategory = useMutation({
     mutationFn: async (categoryId) => {
-      const response = await fetch(`/api/catagory/${categoryId}`, {
+      const response = await fetch(`/api/category/${categoryId}`, {
         method: "DELETE",
       });
       const data = await response.json();

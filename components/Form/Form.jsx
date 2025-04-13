@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import PromptSuggestions from "./PromptSuggestions";
 import TagSuggestions from "./TagSuggestions";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import ScheduleOptions from "@components/PromptCard/SchedulePost/ScheduleOptions";
 import { Button } from "@components/ui/button";
 import { useSession } from "@node_modules/next-auth/react";
+import ScheduleOptions from "@components/PromptForm/SchedulePost/ScheduleOptions";
 
 const Form = ({
   type,

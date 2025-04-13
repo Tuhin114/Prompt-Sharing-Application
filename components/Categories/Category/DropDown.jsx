@@ -1,8 +1,7 @@
-import React from "react";
+import React, { use, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -10,17 +9,17 @@ import { MoreVertical } from "lucide-react";
 import EditName from "./EditName";
 import DeleteName from "./DeleteName";
 
-const DropDown = ({
-  updateCategory,
-  deleteCategory,
-  activeTab,
-  sidebarTab,
-  setSidebarTab,
-  sidebarTabName,
-  setSidebarTabName,
-}) => {
+const DropDown = ({ updateCategory, deleteCategory, tabProps }) => {
+  const {
+    sidebarTab,
+    activeTab,
+    sidebarTabName,
+    setSidebarTabName,
+    setSidebarTab,
+  } = tabProps;
+  const [open, setOpen] = useState(false);
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <button className="p-2 text-gray-600 hover:text-gray-900">
           <MoreVertical size={18} />
@@ -28,18 +27,19 @@ const DropDown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-24">
         <EditName
-          updateCategory={updateCategory}
+          setOpen={setOpen}
           sidebarTab={sidebarTab}
           sidebarTabName={sidebarTabName}
           setSidebarTabName={setSidebarTabName}
+          updateCategory={updateCategory}
         />
         <DeleteName
-          deleteCategory={deleteCategory}
           sidebarTab={sidebarTab}
           activeTab={activeTab}
           setSidebarTab={setSidebarTab}
           sidebarTabName={sidebarTabName}
           setSidebarTabName={setSidebarTabName}
+          deleteCategory={deleteCategory}
         />
       </DropdownMenuContent>
     </DropdownMenu>

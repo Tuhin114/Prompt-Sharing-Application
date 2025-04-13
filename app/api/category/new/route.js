@@ -1,15 +1,8 @@
-import Catagory from "@models/category";
+import Category from "@models/category";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (req) => {
   let { creator_id, type, name } = await req.json();
-
-  console.log(
-    "Received POST request to create category",
-    creator_id,
-    type,
-    name
-  );
 
   if (!name.trim()) {
     return new Response("Category name is required", { status: 400 });
@@ -18,8 +11,7 @@ export const POST = async (req) => {
   try {
     await connectToDB();
 
-    // Check if a category with the same name and type already exists for the creator
-    const existingCategory = await Catagory.findOne({
+    const existingCategory = await Category.findOne({
       name: name.trim(),
       type,
       creator: creator_id,
@@ -32,16 +24,16 @@ export const POST = async (req) => {
       );
     }
 
-    const newCatagory = new Catagory({
+    const newCategory = new Category({
       name: name.trim(),
       creator: creator_id,
       type,
       post_id: [],
     });
 
-    await newCatagory.save();
+    await newCategory.save();
 
-    return new Response(JSON.stringify(newCatagory), { status: 201 });
+    return new Response(JSON.stringify(newCategory), { status: 201 });
   } catch (error) {
     console.error("Failed to create category:", error);
     return new Response("Failed to create category", { status: 500 });

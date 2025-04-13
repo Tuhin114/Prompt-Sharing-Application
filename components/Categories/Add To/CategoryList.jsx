@@ -1,14 +1,7 @@
 import React from "react";
 import CategoryItem from "./CategoryItem";
 
-const CategoryList = ({
-  addPostToCategory,
-  removePostFromCategory,
-  categoryLoading,
-  categories,
-  loading,
-  post,
-}) => {
+const CategoryList = ({ categoryLoading, categories, loading, post }) => {
   console.log(categories);
   console.log(post);
   return (
@@ -22,13 +15,11 @@ const CategoryList = ({
           {categories.map((category) => (
             <CategoryItem
               categoryLoading={categoryLoading}
-              addPostToCategory={addPostToCategory}
-              removePostFromCategory={removePostFromCategory}
               key={category._id}
               name={category.name}
               categoryId={category._id}
               postId={post._id}
-              isAdded={post?.catagories?.includes(category._id)}
+              isAdded={post?.categories?.includes(category._id)}
             />
           ))}
         </>

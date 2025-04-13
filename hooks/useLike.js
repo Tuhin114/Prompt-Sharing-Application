@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 
-const useLike = (post, session) => {
+const useLike = (post, userId) => {
   // Validate inputs to prevent errors
   if (!post || typeof post !== "object" || !post.likes) {
     console.error("Invalid post object provided to useLike hook.");
     return { isLiked: false, totalLikes: 0, handleLikeOrUnlike: () => {} };
   }
-
-  const userId = session?.user?.id;
 
   // Check if the user has already liked the post
   const isAlreadyLiked = userId ? post.likes.includes(userId) : false;
@@ -20,7 +18,7 @@ const useLike = (post, session) => {
     // Update state if post or session changes dynamically
     setIsLiked(isAlreadyLiked);
     setTotalLikes(post.likes.length || 0);
-  }, [post, session]);
+  }, [post, userId]);
 
   const handleLikeOrUnlike = async (e) => {
     e.preventDefault();

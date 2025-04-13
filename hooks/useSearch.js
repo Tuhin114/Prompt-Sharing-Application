@@ -1,38 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 const useSearch = (allPosts) => {
   const [searchText, setSearchText] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState(allPosts);
 
-  useEffect(() => {
-    setFilteredPosts(allPosts);
-  }, [allPosts]);
+  // Derive filteredPosts using useMemo
+  const filteredPosts = useMemo(() => {
+    const query = searchText.trim();
 
-  // Function to filter posts based on a query string.
-  const filterPrompts = (query) => {
-    if (!query) return allPosts;
+    if (!query || !allPosts) {
+      return allPosts || [];
+    }
 
-    const regex = new RegExp(query, "i");
+    const regex = new RegExp(query, "i"); // 'i' for case-insensitive
+
+    // Filter based on the original posts
     return allPosts.filter(
       (post) =>
-        regex.test(post.creator.username) ||
-        regex.test(post.tag) ||
-        regex.test(post.prompt)
+        (post?.creator?.username && regex.test(post.creator.username)) ||
+        (post?.tag && regex.test(post.tag)) ||
+        (post?.prompt && regex.test(post.prompt))
     );
-  };
+  }, [allPosts, searchText]);
 
-  // Accepts either an event or a plain string.
   const handleSearchChange = (eOrQuery) => {
     let query =
       typeof eOrQuery === "string" ? eOrQuery : eOrQuery?.target?.value || "";
     setSearchText(query);
-    setFilteredPosts(filterPrompts(query));
   };
 
   const handleClearSearch = () => {
-    console.log(allPosts);
     setSearchText("");
-    setFilteredPosts(allPosts);
   };
 
   return { searchText, filteredPosts, handleSearchChange, handleClearSearch };

@@ -8,7 +8,7 @@ const useCategoryActions = () => {
       queryKey: ["categoryPosts", categoryId],
       queryFn: async () => {
         if (!categoryId) return [];
-        const response = await fetch(`/api/catagory/${categoryId}`);
+        const response = await fetch(`/api/category/${categoryId}`);
         if (!response.ok) throw new Error("Failed to fetch category posts");
         const json = await response.json();
         return Array.isArray(json.posts) ? json.posts : [];
@@ -21,7 +21,7 @@ const useCategoryActions = () => {
 
   // ✅ Function to Add Post to Category
   const addPostToCategory = async (categoryId, promptId) => {
-    const response = await fetch("/api/catagory/post", {
+    const response = await fetch("/api/category/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category_id: categoryId, prompt_id: promptId }),
@@ -32,7 +32,7 @@ const useCategoryActions = () => {
 
   // ✅ Function to Remove Post from Category
   const removePostFromCategory = async (categoryId, promptId) => {
-    const response = await fetch("/api/catagory/post", {
+    const response = await fetch("/api/category/post", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category_id: categoryId, prompt_id: promptId }),

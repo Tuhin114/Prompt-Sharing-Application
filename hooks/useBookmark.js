@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const useBookmark = (post, session) => {
+const useBookmark = (post, userId) => {
   if (!post || typeof post !== "object" || !post.saved) {
     console.error("Invalid post object provided to useBookmark hook.");
     return {
@@ -13,7 +13,6 @@ const useBookmark = (post, session) => {
   }
 
   const queryClient = useQueryClient();
-  const userId = session?.user?.id;
   const isAlreadyBookmarked = userId ? post.saved.includes(userId) : false;
 
   const [isBookmarked, setIsBookmarked] = useState(isAlreadyBookmarked);
@@ -22,7 +21,7 @@ const useBookmark = (post, session) => {
   useEffect(() => {
     setIsBookmarked(userId ? post.saved.includes(userId) : false);
     setTotalBookmarks(post.saved.length || 0);
-  }, [post, session]);
+  }, [post, userId]);
 
   const bookmarkMutation = useMutation({
     mutationFn: async ({ action }) => {
@@ -86,7 +85,6 @@ const useBookmark = (post, session) => {
     totalBookmarks,
     addBookmark,
     removeBookmark,
-    isLoading: bookmarkMutation.isLoading,
   };
 };
 

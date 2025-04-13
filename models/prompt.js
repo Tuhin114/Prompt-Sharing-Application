@@ -32,7 +32,7 @@ const PromptSchema = new Schema({
     ref: "User",
     default: [],
   },
-  catagories: {
+  categories: {
     type: [Schema.Types.ObjectId],
     ref: "Category",
     default: [],

@@ -1,37 +1,24 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CategoryInput from "./CategoryInput";
 import CategoryList from "./CategoryList";
 import useCategories from "@/hooks/useCategories";
 import CategoryItem from "./CategoryItem";
 
 const CategoriesDialog = ({
-  isSaveBtn = false,
-  isBookmarked,
+  isSaveBtn,
   removeBookmark,
-
   type,
   post,
   open,
   setOpen,
 }) => {
   const userId = "66c2ea75d5be47e78d405f67";
-
   const categoryType = isSaveBtn ? "saved_items" : type;
-
-  // console.log(categoryType);
-
-  // Using custom hook
+  const isBookmark = isSaveBtn ? true : false;
   const { categories, loading, addCategory } = useCategories(
     userId,
     categoryType
   );
-
-  // console.log(categories);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,7 +30,7 @@ const CategoriesDialog = ({
       <DialogContent className="sm:max-w-[300px]">
         <div className="grid gap-4 py-4" onKeyDown={(e) => e.stopPropagation()}>
           <CategoryInput addCategory={addCategory} />
-          {isBookmarked && (
+          {isBookmark && (
             <CategoryItem
               name="All Saved"
               postId={post._id}

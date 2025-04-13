@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Select,
   SelectTrigger,
@@ -8,39 +8,14 @@ import {
   SelectLabel,
   SelectValue,
 } from "@/components/ui/select";
-import useSortPosts from "@hooks/useSortPosts";
 
-const Filter = ({
-  activeTab,
-  sidebarTab,
-  postsData,
-  setPostsData,
-  originalPosts,
-}) => {
-  const [sortType, setSortType] = useState("default");
-  const { sortedPosts, handleSortChange } = useSortPosts(postsData);
-
-  // console.log(sidebarTab);
-  // console.log(postsData);
-
+const Filter = ({ categoryId, activeTab, sortType, handleSortChange }) => {
   useEffect(() => {
-    setSortType("default");
-    setPostsData(originalPosts);
-  }, [originalPosts]);
-
-  useEffect(() => {
-    if (JSON.stringify(sortedPosts) !== JSON.stringify(postsData)) {
-      setPostsData(sortedPosts);
-    }
-  }, [sortedPosts]);
-
-  const handleSort = (selectedSort) => {
-    setSortType(selectedSort);
-    handleSortChange(selectedSort);
-  };
-
+    // Reset sortType when activeTab changes
+    handleSortChange("default");
+  }, [activeTab, categoryId]);
   return (
-    <Select value={sortType} onValueChange={handleSort}>
+    <Select value={sortType} onValueChange={handleSortChange}>
       <SelectTrigger className="w-[150px] bg-white">
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>

@@ -1,27 +1,6 @@
 import { Input } from "@components/ui/input";
-import useSearch from "@hooks/useSearch";
-import { use, useEffect } from "react";
 
-const Searchbar = ({
-  activeTab,
-  sidebarTab,
-  originalPosts,
-  postsData,
-  setPostsData,
-}) => {
-  const { searchText, filteredPosts, handleSearchChange, handleClearSearch } =
-    useSearch(originalPosts);
-
-  useEffect(() => {
-    handleClearSearch();
-  }, [originalPosts]);
-
-  useEffect(() => {
-    if (postsData !== filteredPosts) {
-      setPostsData(filteredPosts);
-    }
-  }, [filteredPosts, setPostsData]);
-
+const Searchbar = ({ searchText, handleSearchChange, handleClearSearch }) => {
   return (
     <form className="relative flex-1">
       <Input

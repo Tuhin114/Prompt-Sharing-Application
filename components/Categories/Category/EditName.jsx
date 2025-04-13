@@ -15,15 +15,14 @@ import { DropdownMenuItem } from "@components/ui/dropdown-menu";
 import useCategories from "@hooks/useCategories";
 
 const EditName = ({
+  setOpen,
   updateCategory,
   sidebarTab,
   sidebarTabName,
   setSidebarTabName,
 }) => {
   const [name, setName] = useState(sidebarTabName);
-  const [open, setOpen] = useState(false);
-
-  console.log(sidebarTab, sidebarTabName, name);
+  const [openThis, setOpenThis] = useState(false);
 
   // Sync state if sidebarTabName changes
   useEffect(() => {
@@ -36,13 +35,17 @@ const EditName = ({
     const newName = name;
     await updateCategory({ categoryId, newName });
     setSidebarTabName(name);
+    setOpenThis(false);
     setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={openThis} onOpenChange={setOpenThis}>
       <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()}
+          className="cursor-pointer"
+        >
           Edit
         </DropdownMenuItem>
       </DialogTrigger>

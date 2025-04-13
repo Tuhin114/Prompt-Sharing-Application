@@ -44,7 +44,10 @@ const DeleteName = ({
   return (
     <AlertDialog asChild open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()}
+          className="text-red-500 hover:bg-red-100 cursor-pointer"
+        >
           Delete
         </DropdownMenuItem>
       </AlertDialogTrigger>

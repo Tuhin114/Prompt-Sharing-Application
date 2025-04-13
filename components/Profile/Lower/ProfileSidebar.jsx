@@ -1,14 +1,14 @@
+import useCategories from "@hooks/useCategories";
 import AddCategoryDialog from "../../Categories/Add Categories/AddCategoryDialog";
 
 const ProfileSidebar = ({
-  categories,
-  loading,
-  addCategory,
+  userId,
   type,
   sidebarTab,
   setSidebarTab,
   setSidebarTabName,
 }) => {
+  const { categories, loading, addCategory } = useCategories(userId, type);
   const SideBarFixedData = [
     {
       type: "my_posts",

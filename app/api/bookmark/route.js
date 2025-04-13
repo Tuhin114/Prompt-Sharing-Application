@@ -73,7 +73,7 @@ export const DELETE = async (request) => {
       },
       {
         $pull: {
-          catagories: { $in: savedCategories.map((category) => category._id) },
+          categories: { $in: savedCategories.map((category) => category._id) },
         },
       }
     );

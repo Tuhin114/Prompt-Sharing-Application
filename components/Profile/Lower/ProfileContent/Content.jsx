@@ -3,27 +3,27 @@ import Posts from "./Posts";
 import Follow from "./Follow/Follow";
 import DropDown from "@components/Categories/Category/DropDown";
 import Map from "./Follow/Map/Map";
+import useCategories from "@hooks/useCategories";
 
 const Content = ({
-  updateCategory,
-  deleteCategory,
+  userId,
   type,
-  sidebarTab,
-  setSidebarTab,
-  sidebarTabName,
-  setSidebarTabName,
-  activeTab,
+  tabProps,
   handleEdit,
   handleDelete,
   handleView,
 }) => {
-  const isCategory = ["All Posts", "All Saved", "All Drafts"].includes(
-    sidebarTabName
-  );
+  const { activeTab, sidebarTabName, sidebarTab } = tabProps;
+  const { updateCategory, deleteCategory } = useCategories(userId, type);
+  const isCategory = [
+    "All Posts",
+    "All Saved",
+    "All Drafts",
+    "All Following",
+    "All Followers",
+  ].includes(sidebarTabName);
   const isPosts = ["My Posts", "Saved Items", "Drafts"].includes(activeTab);
   const isFollow = ["Following", "Followers"].includes(activeTab);
-
-  console.log(activeTab);
 
   return (
     <div className="flex-1 p-4 ">
@@ -35,11 +35,7 @@ const Content = ({
             <DropDown
               updateCategory={updateCategory}
               deleteCategory={deleteCategory}
-              activeTab={activeTab}
-              sidebarTab={sidebarTab}
-              setSidebarTab={setSidebarTab}
-              sidebarTabName={sidebarTabName}
-              setSidebarTabName={setSidebarTabName}
+              tabProps={tabProps}
             />
           )}
         </div>

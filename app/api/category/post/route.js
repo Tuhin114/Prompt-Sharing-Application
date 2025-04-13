@@ -17,7 +17,7 @@ export const POST = async (request) => {
     // Find the prompt by ID and add the category ID to its category array
     const prompt = await Prompt.findByIdAndUpdate(
       prompt_id,
-      { $addToSet: { catagories: category_id } },
+      { $addToSet: { categories: category_id } },
       { new: true }
     );
 
@@ -47,7 +47,7 @@ export const DELETE = async (req, res) => {
     // Find the prompt by ID and remove the category ID from its category array
     const prompt = await Prompt.findByIdAndUpdate(
       prompt_id,
-      { $pull: { catagories: category_id } },
+      { $pull: { categories: category_id } },
       { new: true }
     );
 
