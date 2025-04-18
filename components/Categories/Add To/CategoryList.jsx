@@ -1,9 +1,13 @@
 import React from "react";
 import CategoryItem from "./CategoryItem";
 
-const CategoryList = ({ categoryLoading, categories, loading, post }) => {
-  console.log(categories);
-  console.log(post);
+const CategoryList = ({
+  categoryLoading,
+  categories,
+  loading,
+  post,
+  setOpen,
+}) => {
   return (
     <div className="flex flex-col gap-2 overflow-y-auto max-h-[300px]">
       {loading ? (
@@ -20,6 +24,7 @@ const CategoryList = ({ categoryLoading, categories, loading, post }) => {
               categoryId={category._id}
               postId={post._id}
               isAdded={post?.categories?.includes(category._id)}
+              setOpen={setOpen}
             />
           ))}
         </>

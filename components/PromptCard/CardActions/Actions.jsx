@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategoriesDialog from "@components/Categories/Add To/CategoriesDialog";
 import Image from "@node_modules/next/image";
 import useBookmark from "@hooks/useBookmark";
@@ -8,6 +8,7 @@ const Actions = ({ type, userId, handleView, post }) => {
   const { isBookmarked, totalBookmarks, addBookmark, removeBookmark } =
     useBookmark(post, userId);
   const { isLiked, totalLikes, handleLikeOrUnlike } = useLike(post, userId);
+
   const [open, setOpen] = useState(false);
 
   const isSaveBtn = true;

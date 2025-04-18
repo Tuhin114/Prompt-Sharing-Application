@@ -19,7 +19,7 @@ const useBookmark = (post, userId) => {
   const [totalBookmarks, setTotalBookmarks] = useState(post.saved.length || 0);
 
   useEffect(() => {
-    setIsBookmarked(userId ? post.saved.includes(userId) : false);
+    setIsBookmarked(isAlreadyBookmarked);
     setTotalBookmarks(post.saved.length || 0);
   }, [post, userId]);
 
@@ -67,6 +67,8 @@ const useBookmark = (post, userId) => {
 
   const addBookmark = async (e) => {
     e.preventDefault();
+    setIsBookmarked(true);
+    setTotalBookmarks((prev) => prev + 1);
     if (!userId)
       return console.warn("User not authenticated. Cannot bookmark the post.");
     bookmarkMutation.mutate({ action: "add" });
@@ -77,6 +79,8 @@ const useBookmark = (post, userId) => {
       return console.warn(
         "User not authenticated. Cannot unbookmark the post."
       );
+    setIsBookmarked(false);
+    setTotalBookmarks((prev) => prev - 1);
     bookmarkMutation.mutate({ action: "remove" });
   };
 

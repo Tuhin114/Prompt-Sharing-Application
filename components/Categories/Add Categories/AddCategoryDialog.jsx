@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import useCategories from "@/hooks/useCategories";
 import CategoryInput from "../Add To/CategoryInput";
 import { Button } from "@components/ui/button";
 import { PlusCircle } from "lucide-react";
@@ -12,9 +11,12 @@ const CategoriesDialog = ({ addCategory }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="p-4 w-full">
-          <PlusCircle className="text-gray-600" />
+        <Button
+          variant="outline"
+          className="w-full font-semibold px-4 py-2 flex items-center gap-2  bg-white text-black hover:bg-gray-100 border border-gray-300 rounded-md"
+        >
           Add Categories
+          <PlusCircle className="w-4 h-4 mt-0.5 font-semibold" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[300px]">

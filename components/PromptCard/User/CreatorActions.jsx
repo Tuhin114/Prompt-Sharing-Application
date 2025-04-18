@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MoreVertical } from "lucide-react";
 import CategoriesDialog from "@components/Categories/Add To/CategoriesDialog";
+import { useState } from "react";
 
 const CreatorActions = ({ post, type, handleEdit, handleDelete }) => {
+  const [open, setOpen] = useState(false);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -47,7 +49,12 @@ const CreatorActions = ({ post, type, handleEdit, handleDelete }) => {
           </AlertDialogContent>
         </AlertDialog>
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          <CategoriesDialog post={post} type={type} />
+          <CategoriesDialog
+            post={post}
+            type={type}
+            open={open}
+            setOpen={setOpen}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -8,6 +8,7 @@ import Filter from "./Filter";
 import useSearch from "@hooks/useSearch";
 import useSortPosts from "@hooks/useSortPosts";
 import PromptCard from "@components/PromptCard/PromptCard";
+import PostsSkeleton from "@components/Skeletons/PostsSkeleton";
 
 const Posts = ({
   type,
@@ -16,6 +17,7 @@ const Posts = ({
   handleEdit,
   handleDelete,
   handleView,
+  setItems,
 }) => {
   const { data: userPostsData = [], loading: postsLoading } =
     useUserPosts(sidebarTab);
@@ -48,6 +50,10 @@ const Posts = ({
     return sortedPosts;
   }, [sortedPosts]);
 
+  setItems(postsData.length);
+
+  const loading = postsLoading || categoryLoading;
+
   return (
     <div>
       <div className="flex justify-between items-center gap-2 mt-4">
@@ -65,8 +71,12 @@ const Posts = ({
       </div>
 
       <div>
-        {postsLoading || categoryLoading ? (
-          <div>Loading...</div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4 pr-2">
+            {[...Array(3)].map((_, i) => (
+              <PostsSkeleton key={i} />
+            ))}
+          </div>
         ) : postsData.length > 0 ? (
           <div className="max-h-[calc(100vh-180px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4 pr-2">
             {postsData.map((post) => (

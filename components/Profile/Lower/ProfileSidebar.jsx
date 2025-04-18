@@ -1,5 +1,8 @@
 import useCategories from "@hooks/useCategories";
 import AddCategoryDialog from "../../Categories/Add Categories/AddCategoryDialog";
+import useUserPosts from "@hooks/useUserPosts";
+import { Skeleton } from "@components/Skeletons/Skeleton";
+import SidebarSkeleton from "@components/Skeletons/SidebarSkeleton";
 
 const ProfileSidebar = ({
   userId,
@@ -40,6 +43,8 @@ const ProfileSidebar = ({
     (category) => category.type === type
   );
 
+  const { data } = useUserPosts(sidebarTab);
+
   return (
     <div className="min-w-[220px] border-r-[1px] border-gray-300">
       <div className="flex flex-col p-4">
@@ -48,7 +53,7 @@ const ProfileSidebar = ({
           filteredCategory.items.map((item) => (
             <div
               key={item.id}
-              className={`px-3 py-2.5 text-sm font-medium cursor-pointer text-center rounded-md transition 
+              className={`px-5 py-2.5 text-sm font-medium cursor-pointer rounded-md transition flex items-center justify-between
                 ${
                   sidebarTab === item.key_name
                     ? "bg-black text-white font-semibold"
@@ -56,7 +61,6 @@ const ProfileSidebar = ({
                 }
               `}
               onClick={() => {
-                // console.log("item.key_name", item.key_name);
                 setSidebarTab(item.key_name);
                 setSidebarTabName(item.name);
               }}
@@ -70,12 +74,12 @@ const ProfileSidebar = ({
 
         {/* Show Dynamic Additional Categories */}
         {loading ? (
-          <div>Loading...</div>
+          <SidebarSkeleton />
         ) : (
           categories.map((category) => (
             <div
               key={category._id}
-              className={`px-3 py-2.5 text-sm font-medium cursor-pointer text-center rounded-md transition
+              className={`px-5 py-2.5 text-sm font-medium cursor-pointer rounded-md transition flex justify-between items-center
                 ${
                   sidebarTab === category._id
                     ? "bg-black text-white font-semibold"
@@ -92,7 +96,7 @@ const ProfileSidebar = ({
             </div>
           ))
         )}
-        <div className="mt-2">
+        <div className="flex items-center justify-center ">
           <AddCategoryDialog addCategory={addCategory} />
         </div>
       </div>

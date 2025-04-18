@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import ProfileHeader from "./Upper/ProfileHeader";
 import ProfileTabs from "./Upper/ProfileTabs";
 import ProfileSidebar from "./Lower/ProfileSidebar";
-import useCategories from "@hooks/useCategories";
 import Content from "./Lower/ProfileContent/Content";
 
 const Profile = ({ handleEdit, handleDelete, handleView }) => {
@@ -37,8 +36,6 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
     }
   }, [activeTab]);
 
-  // console.log("sidebarTab", sidebarTab);
-
   const tabConfig = [
     "My Posts",
     "Saved Items",
@@ -67,10 +64,6 @@ const Profile = ({ handleEdit, handleDelete, handleView }) => {
     sidebarTabName,
     setSidebarTabName,
   };
-
-  // console.log("type", type);
-
-  // console.log("Categories:", categories);
 
   return (
     <section className="w-full min-h-screen">

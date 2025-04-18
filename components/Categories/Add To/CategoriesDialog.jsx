@@ -3,6 +3,7 @@ import CategoryInput from "./CategoryInput";
 import CategoryList from "./CategoryList";
 import useCategories from "@/hooks/useCategories";
 import CategoryItem from "./CategoryItem";
+import { useState } from "react";
 
 const CategoriesDialog = ({
   isSaveBtn,
@@ -39,7 +40,12 @@ const CategoriesDialog = ({
               setOpen={setOpen}
             />
           )}
-          <CategoryList categories={categories} post={post} loading={loading} />
+          <CategoryList
+            categories={categories}
+            post={post}
+            loading={loading}
+            setOpen={setOpen}
+          />
         </div>
       </DialogContent>
     </Dialog>

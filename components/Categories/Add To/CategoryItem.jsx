@@ -11,6 +11,7 @@ import {
 import { Button } from "@components/ui/button";
 import useBookmark from "@hooks/useBookmark";
 import useCategoryActions from "@hooks/useCategoryActions";
+import { set } from "lodash";
 import { useState } from "react";
 
 const CategoryItem = ({
@@ -34,14 +35,20 @@ const CategoryItem = ({
       removeMutation.mutate(
         { categoryId, promptId: postId },
         {
-          onSuccess: () => setAdded(false),
+          onSuccess: () => {
+            setAdded(false);
+            setOpen(false);
+          },
         }
       );
     } else {
       addMutation.mutate(
         { categoryId, promptId: postId },
         {
-          onSuccess: () => setAdded(true),
+          onSuccess: () => {
+            setAdded(true);
+            setOpen(false);
+          },
         }
       );
     }

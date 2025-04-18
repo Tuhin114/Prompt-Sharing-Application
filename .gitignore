@@ -29,9 +29,15 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# local files
+
+utils/cron.js
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
